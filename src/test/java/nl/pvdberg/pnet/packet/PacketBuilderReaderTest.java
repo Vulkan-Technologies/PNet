@@ -24,17 +24,17 @@
 
 package nl.pvdberg.pnet.packet;
 
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
-public class PacketBuilderReaderTest
-{
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PacketBuilderReaderTest {
     protected static final Packet.PacketType TYPE = Packet.PacketType.Reply;
     protected static final short ID = 123;
     protected static final boolean BOOLEAN = true;
     protected static final byte BYTE = 1;
-    protected static final byte[] BYTES = new byte[] {1, 2};
+    protected static final byte[] BYTES = new byte[]{1, 2};
     protected static final double DOUBLE = 0.123d;
     protected static final float FLOAT = 0.321f;
     protected static final int INT = Integer.MAX_VALUE;
@@ -43,8 +43,7 @@ public class PacketBuilderReaderTest
     protected static final String STRING = "Hello!";
 
     @Test
-    public void buildAndRead() throws Exception
-    {
+    public void buildAndRead() throws Exception {
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 10000; i++) sb.append("1234567890");
         final String HUGE_STRING = sb.toString();

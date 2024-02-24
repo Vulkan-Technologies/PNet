@@ -24,55 +24,45 @@
 
 package nl.pvdberg.pnet.client.util;
 
-import nl.pvdberg.pnet.client.Client;
-import nl.pvdberg.pnet.event.AsyncListener;
-import nl.pvdberg.pnet.packet.Packet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import nl.pvdberg.pnet.client.Client;
+import nl.pvdberg.pnet.event.AsyncListener;
+import nl.pvdberg.pnet.packet.Packet;
 import static nl.pvdberg.pnet.threading.ThreadManager.launchThread;
 import static nl.pvdberg.pnet.threading.ThreadManager.waitForCompletion;
 
-public class AsyncClient extends ClientDecorator
-{
-    private final Logger logger = LoggerFactory.getLogger(AsyncClient.class);
+public class AsyncClient extends ClientDecorator {
 
     private final LinkedBlockingDeque<AsyncPacket> asyncSenderQueue;
-    private Future asyncSenderFuture;
+    private Future<?> asyncSenderFuture;
 
     /**
      * Adds asynchronous functionality to given Client implementation
+     *
      * @param client Client implementation
      */
-    public AsyncClient(final Client client)
-    {
+    public AsyncClient(final Client client) {
         super(client);
 
-        asyncSenderQueue = new LinkedBlockingDeque<AsyncPacket>();
+        asyncSenderQueue = new LinkedBlockingDeque<>();
     }
 
     /**
-     * @see Client#connect(String, int)
      * @param asyncListener Nullable completion listener. Contains boolean : true if successfully connected
+     * @see Client#connect(String, int)
      */
-    public synchronized void connectAsync(final String host, final int port, final AsyncListener asyncListener)
-    {
-        if (client.isConnected() && asyncListener != null)
-        {
+    public synchronized void connectAsync(final String host, final int port, final AsyncListener asyncListener) {
+        if (client.isConnected() && asyncListener != null) {
             asyncListener.onCompletion(false);
             return;
         }
 
-        logger.debug("Starting connector thread");
-        launchThread(new Runnable()
-        {
+        launchThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 final boolean result = client.connect(host, port);
                 if (asyncListener != null) asyncListener.onCompletion(result);
             }
@@ -81,98 +71,72 @@ public class AsyncClient extends ClientDecorator
 
     /**
      * Blocks until all packets are sent asynchronously
+     *
      * @see Future#get()
      */
-    public synchronized void waitForAsyncCompletion() throws InterruptedException, ExecutionException
-    {
-        if (asyncSenderFuture != null) waitForCompletion(asyncSenderFuture);
+    public synchronized void waitForAsyncCompletion() throws InterruptedException, ExecutionException {
+        if (asyncSenderFuture != null)
+            waitForCompletion(asyncSenderFuture);
     }
 
     /**
      * Calls {@link AsyncClient#sendAsync(Packet, AsyncListener, boolean) sendAsync(Packet, AsyncListener, false)}
      */
-    public synchronized void sendAsync(final Packet packet, final AsyncListener asyncListener)
-    {
+    public synchronized void sendAsync(final Packet packet, final AsyncListener asyncListener) {
         sendAsync(packet, asyncListener, false);
     }
 
     /**
-     * @see Client#send(Packet)
      * @param asyncListener Nullable completion listener. Contains boolean : true if successfully sent
-     * @param topPriority Whether to add this Packet at the head of the queue
+     * @param topPriority   Whether to add this Packet at the head of the queue
+     * @see Client#send(Packet)
      */
-    public synchronized void sendAsync(final Packet packet, final AsyncListener asyncListener, final boolean topPriority)
-    {
-        logger.debug("Scheduling async Packet, top priority: {}", topPriority);
-
-        if (topPriority)
-        {
+    public synchronized void sendAsync(final Packet packet, final AsyncListener asyncListener, final boolean topPriority) {
+        if (topPriority) {
             asyncSenderQueue.addFirst(new AsyncPacket(packet, asyncListener));
-        }
-        else
-        {
+        } else {
             asyncSenderQueue.addLast(new AsyncPacket(packet, asyncListener));
         }
 
         // Start thread if needed
-        if (asyncSenderFuture == null || asyncSenderFuture.isDone())
-        {
-            asyncSenderFuture = launchThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    asyncSenderThreadImpl();
-                }
-            });
+        if (asyncSenderFuture == null || asyncSenderFuture.isDone()) {
+            asyncSenderFuture = launchThread(this::asyncSenderThreadImpl);
         }
     }
 
-    private void asyncSenderThreadImpl()
-    {
-        logger.debug("Async sender thread started");
-        while (!asyncSenderQueue.isEmpty())
-        {
-            try
-            {
+    private void asyncSenderThreadImpl() {
+        while (!asyncSenderQueue.isEmpty()) {
+            try {
                 final AsyncPacket asyncPacket = asyncSenderQueue.takeFirst();
                 asyncPacket.onComplete(client.send(asyncPacket.getPacket()));
-            }
-            catch (final InterruptedException e)
-            {
+            } catch (final InterruptedException e) {
                 asyncSenderQueue.clear();
                 break;
             }
         }
-        logger.debug("Async sender thread stopped");
     }
 
     @Override
-    public synchronized void close()
-    {
+    public synchronized void close() {
         client.close();
         if (asyncSenderFuture != null) asyncSenderFuture.cancel(true);
     }
 
-    private static class AsyncPacket
-    {
+    private static class AsyncPacket {
         private final Packet packet;
         private final AsyncListener asyncListener;
 
-        public AsyncPacket(final Packet packet, final AsyncListener asyncListener)
-        {
+        public AsyncPacket(final Packet packet, final AsyncListener asyncListener) {
             this.packet = packet;
             this.asyncListener = asyncListener;
         }
 
-        public void onComplete(final boolean result)
-        {
+        public void onComplete(final boolean result) {
             if (asyncListener != null)
                 asyncListener.onCompletion(result);
         }
 
-        public Packet getPacket()
-        {
+        public Packet getPacket() {
             return packet;
         }
     }

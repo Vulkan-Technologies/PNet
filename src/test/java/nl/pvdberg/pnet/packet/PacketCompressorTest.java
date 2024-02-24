@@ -24,19 +24,16 @@
 
 package nl.pvdberg.pnet.packet;
 
-import org.junit.Test;
 
 import java.util.Random;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class PacketCompressorTest
-{
+
+public class PacketCompressorTest {
     @Test
-    public void compressAndDecompress() throws Exception
-    {
+    public void compressAndDecompress() throws Exception {
         final byte[] data = new byte[8096];
         new Random().nextBytes(data);
 
@@ -47,7 +44,7 @@ public class PacketCompressorTest
         final Packet compressed = PacketCompressor.compress(packet);
         final Packet decompressed = PacketCompressor.decompress(compressed);
 
-        assertThat(compressed.getData(), not(equalTo(data)));
-        assertArrayEquals(data, new PacketReader(packet).readBytes());
+        Assertions.assertNotEquals(compressed.getData(), data);
+        Assertions.assertArrayEquals(data, new PacketReader(packet).readBytes());
     }
 }

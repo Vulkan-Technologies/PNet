@@ -24,46 +24,40 @@
 
 package nl.pvdberg.pnet.server.util;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import nl.pvdberg.pnet.server.Server;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-public class PlainServerTest
-{
+public class PlainServerTest {
     protected static final int port1 = 42365;
     protected static final int port2 = 42366;
 
-    protected Server server1;
-    protected Server server2;
+    protected static Server server1;
+    protected static Server server2;
 
-    @Before
-    public void setUp() throws Exception
-    {
+    @BeforeAll
+    public static void setUp() throws Exception {
         server1 = new PlainServer();
-        assertTrue(server1.start(port1));
+        Assertions.assertTrue(server1.start(port1));
         server2 = new PlainServer();
     }
 
-    @After
-    public void tearDown() throws Exception
-    {
+    @AfterAll
+    public static void tearDown() throws Exception {
         server1.stop();
         server2.stop();
     }
 
     @Test
-    public void illegalStart() throws Exception
-    {
-        assertFalse(server2.start(port1));
+    public void illegalStart() throws Exception {
+        Assertions.assertFalse(server2.start(port1));
     }
 
     @Test
-    public void start() throws Exception
-    {
-        assertTrue(server2.start(port2));
+    public void start() throws Exception {
+        Assertions.assertTrue(server2.start(port2));
     }
 }

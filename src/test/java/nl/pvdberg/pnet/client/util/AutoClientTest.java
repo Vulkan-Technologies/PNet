@@ -24,6 +24,11 @@
 
 package nl.pvdberg.pnet.client.util;
 
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+
+import org.junit.jupiter.api.*;
+
 import nl.pvdberg.pnet.client.Client;
 import nl.pvdberg.pnet.event.PNetListener;
 import nl.pvdberg.pnet.event.ReceiveListener;
@@ -31,49 +36,38 @@ import nl.pvdberg.pnet.packet.Packet;
 import nl.pvdberg.pnet.packet.PacketBuilder;
 import nl.pvdberg.pnet.server.Server;
 import nl.pvdberg.pnet.server.util.PlainServer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
 
-import static org.junit.Assert.*;
-
-public class AutoClientTest
-{
+public class AutoClientTest {
     protected static final int port = 42365;
 
     protected Server server;
     protected Client client;
 
-    @Before
-    public void setUp() throws Exception
-    {
+    @BeforeEach
+    public void setUp() throws Exception {
         server = new PlainServer();
         server.start(port);
 
         client = new AutoClient(new PlainClient(), "localhost", port);
     }
 
-    @After
-    public void tearDown() throws Exception
-    {
+    @AfterEach
+    public void tearDown() {
         server.stop();
     }
 
-    @Test(timeout=1000)
-    public void send() throws Exception
-    {
+    @Test
+    @Timeout(1000)
+    public void send() throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
 
         assertFalse(client.isConnected());
 
-        server.setListener(new ReceiveListener()
-        {
+        server.setListener(new ReceiveListener() {
             @Override
-            public void onReceive(final Packet p, final Client c) throws IOException
-            {
+            public void onReceive(final Packet p, final Client c) throws IOException {
                 latch.countDown();
             }
         });
@@ -85,25 +79,20 @@ public class AutoClientTest
     }
 
     @Test
-    public void clientType() throws Exception
-    {
-        client.setClientListener(new PNetListener()
-        {
+    public void clientType() throws Exception {
+        client.setClientListener(new PNetListener() {
             @Override
-            public void onConnect(final Client c)
-            {
-                assertTrue(c instanceof AutoClient);
+            public void onConnect(final Client c) {
+                assertInstanceOf(AutoClient.class, c);
             }
 
             @Override
-            public void onDisconnect(final Client c)
-            {
+            public void onDisconnect(final Client c) {
 
             }
 
             @Override
-            public void onReceive(final Packet p, final Client c) throws IOException
-            {
+            public void onReceive(final Packet p, final Client c) throws IOException {
 
             }
         });

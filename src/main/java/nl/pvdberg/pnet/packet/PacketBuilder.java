@@ -24,14 +24,11 @@
 
 package nl.pvdberg.pnet.packet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
-public class PacketBuilder
-{
-    private final Logger logger = LoggerFactory.getLogger(PacketBuilder.class);
+public class PacketBuilder {
 
     private final ByteArrayOutputStream byteArrayOutputStream;
     private final DataOutputStream dataOutputStream;
@@ -44,8 +41,7 @@ public class PacketBuilder
      * Provides an easy way to build a Packet.
      * Note: data has to be written in the same order as it will be fromStream!
      */
-    public PacketBuilder(final Packet.PacketType packetType)
-    {
+    public PacketBuilder(final Packet.PacketType packetType) {
         byteArrayOutputStream = new ByteArrayOutputStream();
         dataOutputStream = new DataOutputStream(byteArrayOutputStream);
         isBuilt = false;
@@ -57,18 +53,17 @@ public class PacketBuilder
     /**
      * @throws IllegalStateException when Packet is already built
      */
-    private void checkBuilt()
-    {
+    private void checkBuilt() {
         if (isBuilt) throw new IllegalStateException("Packet already built");
     }
 
     /**
      * Adds a custom Packet ID
+     *
      * @param packetID Packet ID
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withID(final short packetID)
-    {
+    public synchronized PacketBuilder withID(final short packetID) {
         checkBuilt();
         this.packetID = packetID;
         return this;
@@ -76,202 +71,158 @@ public class PacketBuilder
 
     /**
      * Adds a byte
+     *
      * @param b Byte
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withByte(final byte b)
-    {
+    public synchronized PacketBuilder withByte(final byte b) {
         checkBuilt();
-        try
-        {
+        try {
             dataOutputStream.writeByte(b);
-        }
-        catch (final IOException e)
-        {
-            logger.error("Unable to add byte: {} : {}", e.getClass(), e.getMessage());
+        } catch (final IOException ignored) {
         }
         return this;
     }
 
     /**
      * Adds byte array
+     *
      * @param b Byte array
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withBytes(final byte[] b)
-    {
+    public synchronized PacketBuilder withBytes(final byte[] b) {
         checkBuilt();
-        try
-        {
+        try {
             dataOutputStream.writeInt(b.length);
             dataOutputStream.write(b);
-        }
-        catch (final IOException e)
-        {
-            logger.error("Unable to add bytes: {} : {}", e.getClass(), e.getMessage());
+        } catch (final IOException ignored) {
         }
         return this;
     }
 
     /**
      * Adds an integer
+     *
      * @param i Integer
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withInt(final int i)
-    {
+    public synchronized PacketBuilder withInt(final int i) {
         checkBuilt();
-        try
-        {
+        try {
             dataOutputStream.writeInt(i);
-        }
-        catch (final IOException e)
-        {
-            logger.error("Unable to add integer: {} : {}", e.getClass(), e.getMessage());
+        } catch (final IOException ignored) {
         }
         return this;
     }
 
     /**
      * Adds a String
+     *
      * @param s UTF-8 String
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withString(final String s)
-    {
-        try
-        {
-            withBytes(s.getBytes("utf-8"));
-        }
-        catch (final UnsupportedEncodingException e)
-        {
-            logger.error("UTF-8 encoding is not supported");
-        }
-
+    public synchronized PacketBuilder withString(final String s) {
+        withBytes(s.getBytes(StandardCharsets.UTF_8));
         return this;
     }
 
     /**
      * Adds a boolean
+     *
      * @param b Boolean
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withBoolean(final boolean b)
-    {
+    public synchronized PacketBuilder withBoolean(final boolean b) {
         checkBuilt();
-        try
-        {
+        try {
             dataOutputStream.writeBoolean(b);
-        }
-        catch (final IOException e)
-        {
-            logger.error("Unable to add boolean: {} : {}", e.getClass(), e.getMessage());
+        } catch (final IOException ignored) {
         }
         return this;
     }
 
     /**
      * Adds a float
+     *
      * @param f Float
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withFloat(final float f)
-    {
+    public synchronized PacketBuilder withFloat(final float f) {
         checkBuilt();
-        try
-        {
+        try {
             dataOutputStream.writeFloat(f);
-        }
-        catch (final IOException e)
-        {
-            logger.error("Unable to add float: {} : {}", e.getClass(), e.getMessage());
+        } catch (final IOException ignored) {
         }
         return this;
     }
 
     /**
      * Adds a double
+     *
      * @param d Double
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withDouble(final double d)
-    {
+    public synchronized PacketBuilder withDouble(final double d) {
         checkBuilt();
-        try
-        {
+        try {
             dataOutputStream.writeDouble(d);
-        }
-        catch (final IOException e)
-        {
-            logger.error("Unable to add double: {} : {}", e.getClass(), e.getMessage());
+        } catch (final IOException ignored) {
         }
         return this;
     }
 
     /**
      * Adds a long
+     *
      * @param l Long
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withLong(final long l)
-    {
+    public synchronized PacketBuilder withLong(final long l) {
         checkBuilt();
-        try
-        {
+        try {
             dataOutputStream.writeLong(l);
-        }
-        catch (final IOException e)
-        {
-            logger.error("Unable to add long: {} : {}", e.getClass(), e.getMessage());
+        } catch (final IOException ignored) {
         }
         return this;
     }
 
     /**
      * Adds a short
+     *
      * @param s Short
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withShort(final short s)
-    {
+    public synchronized PacketBuilder withShort(final short s) {
         checkBuilt();
-        try
-        {
+        try {
             dataOutputStream.writeShort(s);
-        }
-        catch (final IOException e)
-        {
-            logger.error("Unable to add short: {} : {}", e.getClass(), e.getMessage());
+        } catch (final IOException ignored) {
         }
         return this;
     }
 
     /**
      * Returns current data as a byte array
+     *
      * @return Byte array
      */
-    public synchronized byte[] getBytes()
-    {
+    public synchronized byte[] getBytes() {
         return byteArrayOutputStream.toByteArray();
     }
 
     /**
      * Builds Packet with given data
+     *
      * @return Packet
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized Packet build()
-    {
+    public synchronized Packet build() {
         checkBuilt();
         isBuilt = true;
 
-        try
-        {
+        try {
             dataOutputStream.close();
-        }
-        catch (final IOException e)
-        {
-            logger.error("Unable to build packet: {} : {}", e.getClass(), e.getMessage());
+        } catch (final IOException ignored) {
         }
 
         return new Packet(

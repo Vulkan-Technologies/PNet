@@ -24,22 +24,17 @@
 
 package nl.pvdberg.pnet.client;
 
-import nl.pvdberg.pnet.event.PNetListener;
-import nl.pvdberg.pnet.factory.SocketFactory;
-import nl.pvdberg.pnet.packet.Packet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
+import nl.pvdberg.pnet.event.PNetListener;
+import nl.pvdberg.pnet.factory.SocketFactory;
+import nl.pvdberg.pnet.packet.Packet;
 import static nl.pvdberg.pnet.threading.ThreadManager.launchThread;
 
-public class ClientImpl implements Client
-{
-    private final Logger logger = LoggerFactory.getLogger(ClientImpl.class);
+public class ClientImpl implements Client {
 
     private final SocketFactory sf;
 
@@ -52,175 +47,115 @@ public class ClientImpl implements Client
     /**
      * Creates a new Client
      */
-    public ClientImpl(final SocketFactory sf)
-    {
+    public ClientImpl(final SocketFactory sf) {
         this.sf = sf;
     }
 
     @Override
-    public synchronized void setClientListener(final PNetListener clientListener)
-    {
+    public synchronized void setClientListener(final PNetListener clientListener) {
         this.clientListener = clientListener;
     }
 
     @Override
-    public synchronized boolean connect(final String host, final int port)
-    {
-        if (socket != null && !socket.isClosed()) throw new IllegalStateException("Client not closed");
-        if (host.isEmpty() || port == -1) throw new IllegalStateException("Host and port are not set");
+    public synchronized boolean connect(final String host, final int port) {
+        if (socket != null && !socket.isClosed())
+            throw new IllegalStateException("Client not closed");
+        if (host.isEmpty() || port == -1)
+            throw new IllegalStateException("Host and port are not set");
 
-        logger.info("Connecting to {}:{}", host, port);
-
-        try
-        {
+        try {
             setSocket(sf.getSocket(host, port));
-            logger.debug("Connected");
             return true;
-        }
-        catch (final Exception e)
-        {
-            logger.error("Unable to connect: {} :", e.getClass(), e);
+        } catch (final Exception e) {
             return false;
         }
     }
 
     @Override
-    public synchronized void setSocket(final Socket socket) throws IOException
-    {
-        if (this.socket != null && !this.socket.isClosed()) throw new IllegalStateException("Client not closed");
+    public synchronized void setSocket(final Socket socket) throws IOException {
+        if (this.socket != null && !this.socket.isClosed())
+            throw new IllegalStateException("Client not closed");
 
         this.socket = socket;
         socket.setKeepAlive(false);
         dataInputStream = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
         dataOutputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 
-        logger.debug("Starting thread");
-        launchThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                listenerThreadImpl();
-            }
-        });
+        launchThread(this::listenerThreadImpl);
 
-        if (clientListener != null) clientListener.onConnect(this);
+        if (clientListener != null)
+            clientListener.onConnect(this);
     }
 
-    private void listenerThreadImpl()
-    {
-        while (true)
-        {
+    private void listenerThreadImpl() {
+        while (true) {
             final Packet packet;
 
-            try
-            {
+            try {
                 // Block while waiting for a Packet
                 packet = Packet.fromStream(dataInputStream);
-            }
-            catch (final SocketException e)
-            {
+            } catch (final SocketException | EOFException e) {
                 // Ignore : socket is closed
                 close();
                 break;
-            }
-            catch (final EOFException e)
-            {
-                // Ignore : socket is closed
-                close();
-                break;
-            }
-            catch (final IOException e)
-            {
-                logger.error("Error in listener thread: {} :", e.getClass(), e);
+            } catch (final IOException e) {
                 close();
                 break;
             }
 
-            logger.debug("Received packet: {{}}", packet);
 
             // Fire event
-            if (clientListener != null)
-            {
-                try
-                {
-                    clientListener.onReceive(packet, this);
-                }
-                catch (final IOException e)
-                {
-                    logger.warn("Unable to handle Packet: {} :", e.getClass(), e);
-                }
-                catch (final Exception e)
-                {
-                    logger.error("Exception while handling onReceive: {} :", e.getClass(), e);
-                }
+            if (clientListener == null)
+                continue;
+            try {
+                clientListener.onReceive(packet, this);
+            } catch (final Exception ignored) {
             }
         }
-
-        logger.debug("Listener thread stopped");
     }
 
     @Override
-    public synchronized boolean send(final Packet packet)
-    {
+    public synchronized boolean send(final Packet packet) {
         if (!isConnected()) return false;
 
-        try
-        {
-            logger.debug("Sending packet: {{}}", packet);
+        try {
             packet.write(dataOutputStream);
             dataOutputStream.flush();
             return true;
-        }
-        catch (final IOException e)
-        {
-            logger.error("Error while sending packet {{}} : {} :", e.getClass(), e);
+        } catch (final IOException e) {
             return false;
         }
     }
 
     @Override
-    public synchronized void close()
-    {
-        if (socket == null) return;
-        if (socket.isClosed()) return;
+    public synchronized void close() {
+        if (socket == null || socket.isClosed()) return;
 
-        logger.info("Closing client");
-
-        try
-        {
+        try {
             socket.close();
-            logger.debug("Socket closed");
-        }
-        catch (final IOException e)
-        {
-            logger.error("Unable to close socket: {} :", e.getClass(), e);
+        } catch (final IOException ignored) {
         }
 
         if (clientListener != null) clientListener.onDisconnect(this);
     }
 
     @Override
-    public synchronized boolean isConnected()
-    {
+    public synchronized boolean isConnected() {
         return socket != null && socket.isConnected() && !socket.isClosed();
     }
 
     @Override
-    public synchronized InetAddress getInetAddress()
-    {
+    public synchronized InetAddress getInetAddress() {
         return socket.getInetAddress();
     }
 
     @Override
-    public synchronized Socket getSocket()
-    {
+    public synchronized Socket getSocket() {
         return socket;
     }
 
     @Override
-    public synchronized String toString()
-    {
+    public synchronized String toString() {
         return socket.toString();
     }
 }

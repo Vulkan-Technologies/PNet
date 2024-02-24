@@ -24,21 +24,19 @@
 
 package nl.pvdberg.pnet.packet;
 
-import org.junit.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class PacketTest
-{
+
+public class PacketTest {
     @Test
-    public void write() throws Exception
-    {
+    public void write() throws Exception {
         final byte[] data = new byte[128];
         new Random().nextBytes(data);
 
@@ -60,12 +58,11 @@ public class PacketTest
         final DataOutputStream dout2 = new DataOutputStream(bout2);
         packet.write(dout2);
 
-        assertArrayEquals(bout1.toByteArray(), bout2.toByteArray());
+        Assertions.assertArrayEquals(bout1.toByteArray(), bout2.toByteArray());
     }
 
     @Test
-    public void fromStream() throws Exception
-    {
+    public void fromStream() throws Exception {
         final byte[] data = new byte[128];
         new Random().nextBytes(data);
 
@@ -81,10 +78,10 @@ public class PacketTest
 
         final Packet packet = Packet.fromStream(din1);
 
-        assertEquals(Packet.PacketType.Request, packet.getPacketType());
-        assertEquals(0, packet.getPacketID());
-        assertEquals(data.length, packet.getDataLength());
-        assertArrayEquals(data, packet.getData());
+        Assertions.assertEquals(Packet.PacketType.Request, packet.getPacketType());
+        Assertions.assertEquals(0, packet.getPacketID());
+        Assertions.assertEquals(data.length, packet.getDataLength());
+        Assertions.assertArrayEquals(data, packet.getData());
     }
 
 }

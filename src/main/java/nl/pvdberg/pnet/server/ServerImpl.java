@@ -24,27 +24,20 @@
 
 package nl.pvdberg.pnet.server;
 
-import nl.pvdberg.pnet.client.Client;
-import nl.pvdberg.pnet.factory.ClientFactory;
-import nl.pvdberg.pnet.event.PNetListener;
-import nl.pvdberg.pnet.packet.Packet;
-import nl.pvdberg.pnet.factory.ServerSocketFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.pvdberg.pnet.client.Client;
+import nl.pvdberg.pnet.event.PNetListener;
+import nl.pvdberg.pnet.factory.ClientFactory;
+import nl.pvdberg.pnet.factory.ServerSocketFactory;
+import nl.pvdberg.pnet.packet.Packet;
 import static nl.pvdberg.pnet.threading.ThreadManager.launchThread;
 
-public class ServerImpl implements Server
-{
-    private final Logger logger = LoggerFactory.getLogger(ServerImpl.class);
-
+public class ServerImpl implements Server {
     private final ServerSocketFactory ssf;
     private final ClientFactory cf;
 
@@ -54,121 +47,79 @@ public class ServerImpl implements Server
 
     /**
      * Creates a new Server using given factories
+     *
      * @param ssf ServerSocket factory
-     * @param cf Client factory
+     * @param cf  Client factory
      */
-    public ServerImpl(final ServerSocketFactory ssf, final ClientFactory cf) throws IOException
-    {
+    public ServerImpl(final ServerSocketFactory ssf, final ClientFactory cf) throws IOException {
         this.ssf = ssf;
         this.cf = cf;
 
-        clients = new ArrayList<Client>();
+        clients = new ArrayList<>();
     }
 
     @Override
-    public synchronized void setListener(final PNetListener serverListener)
-    {
+    public synchronized void setListener(final PNetListener serverListener) {
         this.serverListener = serverListener;
     }
 
     @Override
-    public synchronized boolean start(final int port)
-    {
-        logger.debug("Starting server");
-
-        try
-        {
+    public synchronized boolean start(final int port) {
+        try {
             server = ssf.getServerSocket(port);
-        }
-        catch (final Exception e)
-        {
-            logger.error("Unable to start server: {} :", e.getClass(), e);
+        } catch (final Exception e) {
             return false;
         }
 
-        logger.debug("Starting thread");
-        launchThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                acceptorThreadImpl();
-            }
-        });
+        launchThread(this::acceptorThreadImpl);
 
         return true;
     }
 
-    private void acceptorThreadImpl()
-    {
-        while (true)
-        {
+    private void acceptorThreadImpl() {
+        while (true) {
             // Wait for a connection
-            try
-            {
+            try {
                 final Socket socket = server.accept();
                 final Client client = cf.getClient();
 
                 // Pass events
-                client.setClientListener(new PNetListener()
-                {
+                client.setClientListener(new PNetListener() {
                     @Override
-                    public void onConnect(final Client c)
-                    {
-                        synchronized (clients)
-                        {
-                            logger.debug("{} connected", c.toString());
+                    public void onConnect(final Client c) {
+                        synchronized (clients) {
                             clients.add(c);
                         }
                         if (serverListener != null) serverListener.onConnect(c);
                     }
 
                     @Override
-                    public void onDisconnect(final Client c)
-                    {
-                        synchronized (clients)
-                        {
-                            logger.debug("{} disconnected", c.toString());
+                    public void onDisconnect(final Client c) {
+                        synchronized (clients) {
                             clients.remove(c);
                         }
                         if (serverListener != null) serverListener.onDisconnect(c);
                     }
 
                     @Override
-                    public void onReceive(final Packet p, final Client c) throws IOException
-                    {
+                    public void onReceive(final Packet p, final Client c) throws IOException {
                         if (serverListener != null) serverListener.onReceive(p, c);
                     }
                 });
 
                 client.setSocket(socket);
-            }
-            catch (final SocketException e)
-            {
-                stop();
-                break;
-            }
-            catch (final IOException e)
-            {
-                logger.error("Error in listener thread: {} :", e.getClass(), e);
+            } catch (final IOException e) {
                 stop();
                 break;
             }
         }
-
-        logger.debug("Listener thread stopped");
     }
 
     @Override
-    public synchronized void stop()
-    {
-        logger.info("Stopping server");
-
-        synchronized (clients)
-        {
+    public synchronized void stop() {
+        synchronized (clients) {
             // Close all client threads
-            for (final Client client : clients)
-            {
+            for (final Client client : clients) {
                 // Prevent ConcurrentModification by removing the event listener
                 client.setClientListener(null);
                 client.close();
@@ -177,14 +128,9 @@ public class ServerImpl implements Server
         }
 
         if (server == null) return;
-        try
-        {
+        try {
             server.close();
-            logger.debug("ServerSocket closed");
-        }
-        catch (final Exception e)
-        {
-            logger.error("Unable to close server: {} :", e.getClass(), e);
+        } catch (final Exception ignored) {
         }
     }
 }

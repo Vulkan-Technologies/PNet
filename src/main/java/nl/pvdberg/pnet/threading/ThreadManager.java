@@ -26,35 +26,33 @@ package nl.pvdberg.pnet.threading;
 
 import java.util.concurrent.*;
 
-public class ThreadManager
-{
+public class ThreadManager {
     private static final ExecutorService service = Executors.newCachedThreadPool();
 
     /**
      * Launches a new thread
+     *
      * @param runnable Runnable to run in a thread
      * @return Future
      */
-    public static Future launchThread(final Runnable runnable)
-    {
+    public static Future<?> launchThread(final Runnable runnable) {
         return service.submit(runnable);
     }
 
     /**
      * Waits for a thread to finish
+     *
      * @param future Future to wait for
      * @see Future#get()
      */
-    public static void waitForCompletion(final Future future) throws ExecutionException, InterruptedException
-    {
+    public static void waitForCompletion(final Future<?> future) throws ExecutionException, InterruptedException {
         future.get();
     }
 
     /**
      * Stops all running threads
      */
-    public static void shutdown()
-    {
+    public static void shutdown() {
         service.shutdownNow();
     }
 }

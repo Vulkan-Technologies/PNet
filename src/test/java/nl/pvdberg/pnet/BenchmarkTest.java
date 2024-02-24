@@ -24,6 +24,14 @@
 
 package nl.pvdberg.pnet;
 
+import java.io.IOException;
+import java.util.Random;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import nl.pvdberg.pnet.client.Client;
 import nl.pvdberg.pnet.client.util.PlainClient;
 import nl.pvdberg.pnet.event.ReceiveListener;
@@ -31,29 +39,20 @@ import nl.pvdberg.pnet.packet.Packet;
 import nl.pvdberg.pnet.packet.PacketBuilder;
 import nl.pvdberg.pnet.server.Server;
 import nl.pvdberg.pnet.server.util.PlainServer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
-import java.io.IOException;
-import java.util.Random;
 
-import static org.junit.Assert.*;
-
-public class BenchmarkTest
-{
+public class BenchmarkTest {
     protected static final int port = 42365;
-    protected static final float invMega = 1/1000000f;
-    protected static final float invNano = 1/1000000000f;
+    protected static final float invMega = 1 / 1000000f;
+    protected static final float invNano = 1 / 1000000000f;
 
-    protected Server server;
-    protected Client client;
+    protected static Server server;
+    protected static Client client;
     protected long start;
     protected long end;
 
-    @Before
-    public void setup() throws Exception
-    {
+    @BeforeAll
+    public static void setup() throws Exception {
         server = new PlainServer();
         server.start(port);
 
@@ -61,32 +60,27 @@ public class BenchmarkTest
         client.connect("localhost", port);
     }
 
-    @After
-    public void teardown() throws Exception
-    {
+    @AfterAll
+    public static void tearDown() throws Exception {
         server.stop();
     }
 
     @Test
-    public void testEmptyPacketsPerSecond() throws Exception
-    {
+    public void testEmptyPacketsPerSecond() throws Exception {
         final int amount = 1000;
 
         final Packet packet = new PacketBuilder(Packet.PacketType.Request).build();
 
-        server.setListener(new ReceiveListener()
-        {
+        server.setListener(new ReceiveListener() {
             @Override
-            public void onReceive(final Packet p, final Client c) throws IOException
-            {
-                assertEquals(Packet.PacketType.Request.ordinal(), p.getPacketType().ordinal());
+            public void onReceive(final Packet p, final Client c) throws IOException {
+                Assertions.assertEquals(Packet.PacketType.Request.ordinal(), p.getPacketType().ordinal());
             }
         });
 
         start = System.nanoTime();
-        for (int i = 0; i < amount; i++)
-        {
-            assertTrue(client.send(packet));
+        for (int i = 0; i < amount; i++) {
+            Assertions.assertTrue(client.send(packet));
         }
         end = System.nanoTime();
 
@@ -94,8 +88,7 @@ public class BenchmarkTest
     }
 
     @Test
-    public void testMBPerSecond() throws Exception
-    {
+    public void testMBPerSecond() throws Exception {
         final int amount = 1000;
 
         final byte[] randomData = new byte[50000];
@@ -105,20 +98,17 @@ public class BenchmarkTest
                 .withBytes(randomData)
                 .build();
 
-        server.setListener(new ReceiveListener()
-        {
+        server.setListener(new ReceiveListener() {
             @Override
-            public void onReceive(final Packet p, final Client c) throws IOException
-            {
+            public void onReceive(final Packet p, final Client c) throws IOException {
                 //assertArrayEquals(randomData, new PacketReader(p).readBytes());
-                assertEquals(randomData.length + 4, p.getData().length);
+                Assertions.assertEquals(randomData.length + 4, p.getData().length);
             }
         });
 
         start = System.nanoTime();
-        for (int i = 0; i < amount; i++)
-        {
-            assertTrue(client.send(packet));
+        for (int i = 0; i < amount; i++) {
+            Assertions.assertTrue(client.send(packet));
         }
         end = System.nanoTime();
 

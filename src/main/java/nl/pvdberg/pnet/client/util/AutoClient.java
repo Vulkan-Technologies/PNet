@@ -26,13 +26,8 @@ package nl.pvdberg.pnet.client.util;
 
 import nl.pvdberg.pnet.client.Client;
 import nl.pvdberg.pnet.packet.Packet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class AutoClient extends ClientDecorator
-{
-    private final Logger logger = LoggerFactory.getLogger(AutoClient.class);
-
+public class AutoClient extends ClientDecorator {
     private final String host;
     private final int port;
 
@@ -40,12 +35,12 @@ public class AutoClient extends ClientDecorator
 
     /**
      * Adds automatic reconnecting functionality to given Client implementation
+     *
      * @param client Client implementation
-     * @param host Host to connect to
-     * @param port Port to connect to
+     * @param host   Host to connect to
+     * @param port   Port to connect to
      */
-    public AutoClient(final Client client, final String host, final int port)
-    {
+    public AutoClient(final Client client, final String host, final int port) {
         super(client);
 
         this.host = host;
@@ -54,28 +49,23 @@ public class AutoClient extends ClientDecorator
 
     /**
      * Sets Runnable event handler which will be called directly after reconnecting
+     *
      * @param onReconnect Nullable Runnable
      */
-    public synchronized void setOnReconnect(final Runnable onReconnect)
-    {
+    public synchronized void setOnReconnect(final Runnable onReconnect) {
         this.onReconnect = onReconnect;
     }
 
     @Override
-    public synchronized boolean send(final Packet packet)
-    {
-        if (!client.isConnected())
-        {
-            logger.debug("Auto connecting");
+    public synchronized boolean send(final Packet packet) {
+        if (!client.isConnected()) {
             if (!connect(host, port)) return false;
         }
-
         return client.send(packet);
     }
 
     @Override
-    public boolean connect(final String host, final int port)
-    {
+    public boolean connect(final String host, final int port) {
         final boolean connected = client.connect(host, port);
         if (connected && onReconnect != null) onReconnect.run();
         return connected;
@@ -83,19 +73,19 @@ public class AutoClient extends ClientDecorator
 
     /**
      * Returns host
+     *
      * @return Host
      */
-    public String getHost()
-    {
+    public String getHost() {
         return host;
     }
 
     /**
      * Returns port
+     *
      * @return Port
      */
-    public int getPort()
-    {
+    public int getPort() {
         return port;
     }
 }

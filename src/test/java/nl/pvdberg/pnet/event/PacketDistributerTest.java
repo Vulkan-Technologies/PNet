@@ -24,20 +24,21 @@
 
 package nl.pvdberg.pnet.event;
 
-import nl.pvdberg.pnet.client.Client;
-import nl.pvdberg.pnet.packet.Packet;
-import nl.pvdberg.pnet.packet.PacketBuilder;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class PacketDistributerTest
-{
+import nl.pvdberg.pnet.client.Client;
+import nl.pvdberg.pnet.packet.Packet;
+import nl.pvdberg.pnet.packet.PacketBuilder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
+public class PacketDistributerTest {
     protected static final Packet packet1 = new PacketBuilder(Packet.PacketType.Request)
             .withID((short) 1)
             .build();
@@ -48,48 +49,39 @@ public class PacketDistributerTest
 
     protected PacketDistributer packetDistributer;
 
-    @Before
-    public void setUp() throws Exception
-    {
+    @BeforeEach
+    public void setUp() throws Exception {
         packetDistributer = new PacketDistributer();
     }
 
     @Test
-    public void registeredHandler() throws Exception
-    {
+    public void registeredHandler() throws Exception {
         final List<Packet> receivedPackets = new ArrayList<Packet>();
 
-        packetDistributer.addHandler(packet1.getPacketID(), new PacketHandler()
-        {
+        packetDistributer.addHandler(packet1.getPacketID(), new PacketHandler() {
             @Override
-            public void handlePacket(final Packet p, final Client c) throws IOException
-            {
+            public void handlePacket(final Packet p, final Client c) throws IOException {
                 receivedPackets.add(p);
             }
         });
 
         packetDistributer.onReceive(packet1, null);
-        assertTrue(receivedPackets.size() == 1);
+        assertEquals(1, receivedPackets.size());
     }
 
     @Test
-    public void defaultHandler() throws Exception
-    {
+    public void defaultHandler() throws Exception {
         final List<Packet> receivedPackets = new ArrayList<Packet>();
 
-        packetDistributer.addHandler(packet1.getPacketID(), new PacketHandler()
-        {
+        packetDistributer.addHandler(packet1.getPacketID(), new PacketHandler() {
             @Override
-            public void handlePacket(final Packet p, final Client c) throws IOException
-            {
+            public void handlePacket(final Packet p, final Client c) throws IOException {
                 receivedPackets.add(p);
             }
         });
-        packetDistributer.setDefaultHandler(new PacketHandler()
-        {
+        packetDistributer.setDefaultHandler(new PacketHandler() {
             @Override
-            public void handlePacket(final Packet p, final Client c) throws IOException
-            {
+            public void handlePacket(final Packet p, final Client c) throws IOException {
                 receivedPackets.add(p);
             }
         });
@@ -99,16 +91,13 @@ public class PacketDistributerTest
     }
 
     @Test
-    public void globalHandler() throws Exception
-    {
+    public void globalHandler() throws Exception {
         final List<Packet> receivedPackets = new ArrayList<Packet>();
 
         final PacketDistributer globalHandler = new PacketDistributer();
-        globalHandler.setDefaultHandler(new PacketHandler()
-        {
+        globalHandler.setDefaultHandler(new PacketHandler() {
             @Override
-            public void handlePacket(final Packet p, final Client c) throws IOException
-            {
+            public void handlePacket(final Packet p, final Client c) throws IOException {
                 receivedPackets.add(p);
             }
         });
@@ -117,11 +106,9 @@ public class PacketDistributerTest
         packetDistributer.onReceive(packet1, null);
         assertTrue(receivedPackets.size() == 1);
 
-        packetDistributer.addHandler(packet2.getPacketID(), new PacketHandler()
-        {
+        packetDistributer.addHandler(packet2.getPacketID(), new PacketHandler() {
             @Override
-            public void handlePacket(final Packet p, final Client c) throws IOException
-            {
+            public void handlePacket(final Packet p, final Client c) throws IOException {
                 receivedPackets.add(p);
             }
         });
