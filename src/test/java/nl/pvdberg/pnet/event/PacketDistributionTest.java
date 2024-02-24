@@ -53,7 +53,7 @@ public class PacketDistributionTest {
     public void registeredHandler() throws Exception {
         final List<Packet> receivedPackets = new ArrayList<>();
 
-        packetDistributer.addHandler(packet1.getPacketID(), (p, c) -> receivedPackets.add(p));
+        packetDistributer.addHandler(packet1.getId(), (p, c) -> receivedPackets.add(p));
 
         packetDistributer.onReceive(packet1, null);
         assertEquals(1, receivedPackets.size());
@@ -63,7 +63,7 @@ public class PacketDistributionTest {
     public void defaultHandler() throws Exception {
         final List<Packet> receivedPackets = new ArrayList<>();
 
-        packetDistributer.addHandler(packet1.getPacketID(), (p, c) -> receivedPackets.add(p));
+        packetDistributer.addHandler(packet1.getId(), (p, c) -> receivedPackets.add(p));
         packetDistributer.setDefaultHandler((p, c) -> receivedPackets.add(p));
 
         packetDistributer.onReceive(packet2, null);
@@ -81,7 +81,7 @@ public class PacketDistributionTest {
         packetDistributer.onReceive(packet1, null);
         assertEquals(1, receivedPackets.size());
 
-        packetDistributer.addHandler(packet2.getPacketID(), (p, c) -> receivedPackets.add(p));
+        packetDistributer.addHandler(packet2.getId(), (p, c) -> receivedPackets.add(p));
 
         packetDistributer.onReceive(packet2, null);
         assertEquals(3, receivedPackets.size());

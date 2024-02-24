@@ -75,7 +75,7 @@ public class PacketTest {
 
         final Packet packet = Packet.fromStream(din1);
 
-        Assertions.assertEquals(0, packet.getPacketID());
+        Assertions.assertEquals(0, packet.getId());
         Assertions.assertEquals(data.length, packet.getDataLength());
         Assertions.assertArrayEquals(data, packet.getData());
     }

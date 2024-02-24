@@ -55,7 +55,7 @@ public class PacketCompressor {
         }
 
         return new Packet(
-                packet.getPacketID(),
+                packet.getId(),
                 byteArrayOutputStream.toByteArray()
         );
     }
@@ -80,7 +80,7 @@ public class PacketCompressor {
         gzipOutputStream.close();
 
         return new Packet(
-                packet.getPacketID(),
+                packet.getId(),
                 byteArrayOutputStream.toByteArray()
         );
     }

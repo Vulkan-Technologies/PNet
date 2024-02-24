@@ -27,7 +27,7 @@ package nl.pvdberg.pnet.packet;
 import java.io.*;
 
 public class Packet {
-    private final short packetID;
+    private final short id;
     private final int dataLength;
     private final byte[] data;
 
@@ -38,8 +38,8 @@ public class Packet {
      *
      * @param data Packet Data
      */
-    public Packet(final short packetID, final byte[] data) {
-        this.packetID = packetID;
+    public Packet(final short id, final byte[] data) {
+        this.id = id;
         this.dataLength = data.length;
         this.data = data;
     }
@@ -49,8 +49,8 @@ public class Packet {
      *
      * @return Packet ID
      */
-    public short getPacketID() {
-        return packetID;
+    public short getId() {
+        return id;
     }
 
     /**
@@ -79,13 +79,23 @@ public class Packet {
      */
     public void write(final DataOutputStream out) throws IOException {
         // Packet ID
-        out.writeShort(packetID);
+        out.writeShort(id);
 
         // Data Length
         out.writeInt(dataLength);
 
         // Data
         out.write(data);
+    }
+
+    /**
+     * Alters the data of the packet
+     *
+     * @param data new data
+     * @return new Packet with altered data
+     */
+    public Packet alterData(byte[] data) {
+        return new Packet(id, data);
     }
 
     /**

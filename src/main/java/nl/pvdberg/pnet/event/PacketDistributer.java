@@ -51,7 +51,7 @@ public class PacketDistributer {
     public synchronized void onReceive(final Packet packet, final Client client) throws IOException {
         if (globalHandler != null) globalHandler.onReceive(packet, client);
 
-        final PacketHandler packetHandler = registry.get(packet.getPacketID());
+        final PacketHandler packetHandler = registry.get(packet.getId());
         if (packetHandler == null) {
             if (defaultHandler != null) defaultHandler.handlePacket(packet, client);
         } else packetHandler.handlePacket(packet, client);

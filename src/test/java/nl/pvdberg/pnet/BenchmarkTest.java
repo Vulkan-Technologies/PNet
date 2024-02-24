@@ -74,7 +74,7 @@ public class BenchmarkTest {
         server.setListener(new ReceiveListener() {
             @Override
             public void onReceive(final Packet p, final Client c) throws IOException {
-                Assertions.assertEquals(1, p.getPacketID());
+                Assertions.assertEquals(1, p.getId());
             }
         });
 

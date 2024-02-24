@@ -44,11 +44,11 @@ public class PacketReader
     }
 
     /**
-     * See {@link Packet#getPacketID()}
+     * See {@link Packet#getId()}
      */
     public short getPacketID()
     {
-        return packet.getPacketID();
+        return packet.getId();
     }
 
     /**

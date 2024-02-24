@@ -75,7 +75,7 @@ public class PacketBuilderReaderTest {
 
         final PacketReader packetReader = new PacketReader(packet);
 
-        assertEquals(ID, packetReader.getPacket().getPacketID());
+        assertEquals(ID, packetReader.getPacket().getId());
         assertEquals(BOOLEAN, packetReader.readBoolean());
         assertEquals(BYTE, packetReader.readByte());
         assertArrayEquals(BYTES, packetReader.readBytes());
