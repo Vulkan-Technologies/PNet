@@ -24,39 +24,20 @@
 
 package nl.pvdberg.pnet.server.util;
 
-import nl.pvdberg.pnet.client.Client;
-import nl.pvdberg.pnet.client.util.PlainClient;
-import nl.pvdberg.pnet.factory.ClientFactory;
-import nl.pvdberg.pnet.factory.ServerSocketFactory;
-import nl.pvdberg.pnet.server.ServerImpl;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 
-public class PlainServer extends ServerDecorator
-{
+import nl.pvdberg.pnet.client.util.PlainClient;
+import nl.pvdberg.pnet.server.ServerImpl;
+
+public class PlainServer extends ServerDecorator {
     /**
      * Creates a new normal Server
      */
-    public PlainServer() throws IOException
-    {
+    public PlainServer() throws IOException {
         super(new ServerImpl(
-                new ServerSocketFactory()
-                {
-                    @Override
-                    public ServerSocket getServerSocket(final int port) throws IOException
-                    {
-                        return new ServerSocket(port);
-                    }
-                },
-                new ClientFactory()
-                {
-                    @Override
-                    public Client getClient()
-                    {
-                        return new PlainClient();
-                    }
-                }
+                address -> new ServerSocket(address.getPort(), 100, address.getAddress()),
+                PlainClient::new
         ));
     }
 }

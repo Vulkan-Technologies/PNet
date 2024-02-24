@@ -25,6 +25,7 @@
 package nl.pvdberg.pnet.client.util;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.jupiter.api.*;
@@ -48,7 +49,7 @@ public class PlainClientTest {
     @BeforeEach
     public void setUp() throws Exception {
         server = new PlainServer();
-        assertTrue(server.start(port));
+        assertTrue(server.start(new InetSocketAddress("localhost", port)));
         client = new PlainClient();
     }
 

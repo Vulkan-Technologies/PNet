@@ -24,22 +24,25 @@
 
 package nl.pvdberg.pnet.server;
 
+import java.net.InetSocketAddress;
+
 import nl.pvdberg.pnet.event.PNetListener;
 
-public interface Server
-{
+public interface Server {
     /**
      * Sets the event listener
+     *
      * @param serverListener Nullable event listener
      */
     void setListener(final PNetListener serverListener);
 
     /**
      * Starts the server at given port
-     * @param port Port to listen to
+     *
+     * @param address Address to bind to
      * @return Successful
      */
-    boolean start(int port);
+    boolean start(InetSocketAddress address);
 
     /**
      * Closes all sockets and stops the acceptor thread

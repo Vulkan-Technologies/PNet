@@ -24,8 +24,9 @@
 
 package nl.pvdberg.pnet.factory;
 
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 
 public interface ServerSocketFactory {
-    ServerSocket getServerSocket(final int port) throws Exception;
+    ServerSocket getServerSocket(InetSocketAddress address) throws Exception;
 }

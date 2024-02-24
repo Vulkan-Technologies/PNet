@@ -24,6 +24,8 @@
 
 package nl.pvdberg.pnet.server.util;
 
+import java.net.InetSocketAddress;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -41,7 +43,7 @@ public class PlainServerTest {
     @BeforeAll
     public static void setUp() throws Exception {
         server1 = new PlainServer();
-        Assertions.assertTrue(server1.start(port1));
+        Assertions.assertTrue(server1.start(new InetSocketAddress("localhost", port1)));
         server2 = new PlainServer();
     }
 
@@ -53,11 +55,11 @@ public class PlainServerTest {
 
     @Test
     public void illegalStart() throws Exception {
-        Assertions.assertFalse(server2.start(port1));
+        Assertions.assertFalse(server2.start(new InetSocketAddress("localhost", port1)));
     }
 
     @Test
     public void start() throws Exception {
-        Assertions.assertTrue(server2.start(port2));
+        Assertions.assertTrue(server2.start(new InetSocketAddress("localhost", port2)));
     }
 }

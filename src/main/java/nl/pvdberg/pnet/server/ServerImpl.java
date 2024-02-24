@@ -25,6 +25,7 @@
 package nl.pvdberg.pnet.server;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -64,9 +65,9 @@ public class ServerImpl implements Server {
     }
 
     @Override
-    public synchronized boolean start(final int port) {
+    public synchronized boolean start(InetSocketAddress address) {
         try {
-            server = ssf.getServerSocket(port);
+            server = ssf.getServerSocket(address);
         } catch (final Exception e) {
             return false;
         }

@@ -25,6 +25,7 @@
 package nl.pvdberg.pnet;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.Random;
 
 import org.junit.jupiter.api.AfterAll;
@@ -54,7 +55,7 @@ public class BenchmarkTest {
     @BeforeAll
     public static void setup() throws Exception {
         server = new PlainServer();
-        server.start(port);
+        server.start(new InetSocketAddress("localhost", port));
 
         client = new PlainClient();
         client.connect("localhost", port);
