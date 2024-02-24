@@ -26,7 +26,6 @@ package nl.pvdberg.pnet.factory;
 
 import java.net.Socket;
 
-public interface SocketFactory
-{
+public interface SocketFactory {
     Socket getSocket(final String host, final int port) throws Exception;
 }

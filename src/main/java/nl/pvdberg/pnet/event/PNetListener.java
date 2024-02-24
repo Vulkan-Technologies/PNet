@@ -24,27 +24,29 @@
 
 package nl.pvdberg.pnet.event;
 
+import java.io.IOException;
+
 import nl.pvdberg.pnet.client.Client;
 import nl.pvdberg.pnet.packet.Packet;
 
-import java.io.IOException;
-
-public interface PNetListener
-{
+public interface PNetListener {
     /**
      * Called when a connection is made
+     *
      * @param c Connected Client
      */
     void onConnect(final Client c);
 
     /**
      * Called when a connection is lost
+     *
      * @param c Lost Client
      */
     void onDisconnect(final Client c);
 
     /**
      * Called when a new Packet has been received. May throw a caught and silenced IOException
+     *
      * @param p New Packet
      * @param c Sender
      * @throws IOException when anything goes wrong during data extraction. This exception is caught because invalid Packets should not crash the Client or Server

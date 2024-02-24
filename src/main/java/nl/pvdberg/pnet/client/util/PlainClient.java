@@ -24,11 +24,9 @@
 
 package nl.pvdberg.pnet.client.util;
 
-import nl.pvdberg.pnet.client.ClientImpl;
-import nl.pvdberg.pnet.factory.SocketFactory;
-
-import java.io.IOException;
 import java.net.Socket;
+
+import nl.pvdberg.pnet.client.ClientImpl;
 
 public class PlainClient extends ClientDecorator
 {
@@ -37,15 +35,6 @@ public class PlainClient extends ClientDecorator
      */
     public PlainClient()
     {
-        super(new ClientImpl(
-                new SocketFactory()
-                {
-                    @Override
-                    public Socket getSocket(final String host, final int port) throws IOException
-                    {
-                        return new Socket(host, port);
-                    }
-                })
-        );
+        super(new ClientImpl(Socket::new));
     }
 }

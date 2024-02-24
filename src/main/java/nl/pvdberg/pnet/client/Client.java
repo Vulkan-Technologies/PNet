@@ -24,38 +24,41 @@
 
 package nl.pvdberg.pnet.client;
 
-import nl.pvdberg.pnet.event.PNetListener;
-import nl.pvdberg.pnet.packet.Packet;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
-public interface Client
-{
+import nl.pvdberg.pnet.event.PNetListener;
+import nl.pvdberg.pnet.packet.Packet;
+
+public interface Client {
     /**
      * Sets the event listener
+     *
      * @param clientListener Nullable event listener
      */
     void setClientListener(final PNetListener clientListener);
 
     /**
      * Connects to given host:port
-     * @throws IllegalStateException when Client is not closed
+     *
      * @return Successful
+     * @throws IllegalStateException when Client is not closed
      */
     boolean connect(final String host, final int port);
 
     /**
      * Directly sets socket in Client
+     *
      * @param socket Socket to be used
-     * @throws IOException when unable to use given Socket
+     * @throws IOException           when unable to use given Socket
      * @throws IllegalStateException when Client is not closed
      */
     void setSocket(final Socket socket) throws IOException;
 
     /**
      * Sends given Packet
+     *
      * @param packet Packet to send
      * @return Successful
      */
@@ -68,18 +71,21 @@ public interface Client
 
     /**
      * Returns whether the Client has an active connection
+     *
      * @return Connected
      */
     boolean isConnected();
 
     /**
      * Returns InetAddress of this Client
+     *
      * @return InetAddress of this Client
      */
     InetAddress getInetAddress();
 
     /**
      * Returns current Socket
+     *
      * @return Socket
      */
     Socket getSocket();

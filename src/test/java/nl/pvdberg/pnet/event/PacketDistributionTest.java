@@ -24,27 +24,22 @@
 
 package nl.pvdberg.pnet.event;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import nl.pvdberg.pnet.client.Client;
 import nl.pvdberg.pnet.packet.Packet;
 import nl.pvdberg.pnet.packet.PacketBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class PacketDistributerTest {
-    protected static final Packet packet1 = new PacketBuilder(Packet.PacketType.Request)
-            .withID((short) 1)
+public class PacketDistributionTest {
+    protected static final Packet packet1 = new PacketBuilder((short) 1)
             .build();
 
-    protected static final Packet packet2 = new PacketBuilder(Packet.PacketType.Request)
-            .withID((short) 2)
+    protected static final Packet packet2 = new PacketBuilder((short) 2)
             .build();
 
     protected PacketDistributer packetDistributer;
@@ -56,14 +51,9 @@ public class PacketDistributerTest {
 
     @Test
     public void registeredHandler() throws Exception {
-        final List<Packet> receivedPackets = new ArrayList<Packet>();
+        final List<Packet> receivedPackets = new ArrayList<>();
 
-        packetDistributer.addHandler(packet1.getPacketID(), new PacketHandler() {
-            @Override
-            public void handlePacket(final Packet p, final Client c) throws IOException {
-                receivedPackets.add(p);
-            }
-        });
+        packetDistributer.addHandler(packet1.getPacketID(), (p, c) -> receivedPackets.add(p));
 
         packetDistributer.onReceive(packet1, null);
         assertEquals(1, receivedPackets.size());
@@ -71,49 +61,29 @@ public class PacketDistributerTest {
 
     @Test
     public void defaultHandler() throws Exception {
-        final List<Packet> receivedPackets = new ArrayList<Packet>();
+        final List<Packet> receivedPackets = new ArrayList<>();
 
-        packetDistributer.addHandler(packet1.getPacketID(), new PacketHandler() {
-            @Override
-            public void handlePacket(final Packet p, final Client c) throws IOException {
-                receivedPackets.add(p);
-            }
-        });
-        packetDistributer.setDefaultHandler(new PacketHandler() {
-            @Override
-            public void handlePacket(final Packet p, final Client c) throws IOException {
-                receivedPackets.add(p);
-            }
-        });
+        packetDistributer.addHandler(packet1.getPacketID(), (p, c) -> receivedPackets.add(p));
+        packetDistributer.setDefaultHandler((p, c) -> receivedPackets.add(p));
 
         packetDistributer.onReceive(packet2, null);
-        assertTrue(receivedPackets.size() == 1);
+        assertEquals(1, receivedPackets.size());
     }
 
     @Test
     public void globalHandler() throws Exception {
-        final List<Packet> receivedPackets = new ArrayList<Packet>();
+        final List<Packet> receivedPackets = new ArrayList<>();
 
         final PacketDistributer globalHandler = new PacketDistributer();
-        globalHandler.setDefaultHandler(new PacketHandler() {
-            @Override
-            public void handlePacket(final Packet p, final Client c) throws IOException {
-                receivedPackets.add(p);
-            }
-        });
+        globalHandler.setDefaultHandler((p, c) -> receivedPackets.add(p));
         packetDistributer.setGlobalHandler(globalHandler);
 
         packetDistributer.onReceive(packet1, null);
-        assertTrue(receivedPackets.size() == 1);
+        assertEquals(1, receivedPackets.size());
 
-        packetDistributer.addHandler(packet2.getPacketID(), new PacketHandler() {
-            @Override
-            public void handlePacket(final Packet p, final Client c) throws IOException {
-                receivedPackets.add(p);
-            }
-        });
+        packetDistributer.addHandler(packet2.getPacketID(), (p, c) -> receivedPackets.add(p));
 
         packetDistributer.onReceive(packet2, null);
-        assertTrue(receivedPackets.size() == 3);
+        assertEquals(3, receivedPackets.size());
     }
 }

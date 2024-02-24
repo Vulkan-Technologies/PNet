@@ -69,12 +69,12 @@ public class BenchmarkTest {
     public void testEmptyPacketsPerSecond() throws Exception {
         final int amount = 1000;
 
-        final Packet packet = new PacketBuilder(Packet.PacketType.Request).build();
+        final Packet packet = new PacketBuilder((short) 1).build();
 
         server.setListener(new ReceiveListener() {
             @Override
             public void onReceive(final Packet p, final Client c) throws IOException {
-                Assertions.assertEquals(Packet.PacketType.Request.ordinal(), p.getPacketType().ordinal());
+                Assertions.assertEquals(1, p.getPacketID());
             }
         });
 
@@ -94,7 +94,7 @@ public class BenchmarkTest {
         final byte[] randomData = new byte[50000];
         new Random().nextBytes(randomData);
 
-        final Packet packet = new PacketBuilder(Packet.PacketType.Request)
+        final Packet packet = new PacketBuilder()
                 .withBytes(randomData)
                 .build();
 

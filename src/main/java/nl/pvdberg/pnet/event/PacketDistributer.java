@@ -24,15 +24,14 @@
 
 package nl.pvdberg.pnet.event;
 
-import nl.pvdberg.pnet.client.Client;
-import nl.pvdberg.pnet.packet.Packet;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PacketDistributer
-{
+import nl.pvdberg.pnet.client.Client;
+import nl.pvdberg.pnet.packet.Packet;
+
+public class PacketDistributer {
     private PacketDistributer globalHandler;
     private PacketHandler defaultHandler;
     private final Map<Short, PacketHandler> registry;
@@ -40,46 +39,44 @@ public class PacketDistributer
     /**
      * Creates a new Packet Distributer. Use this to link functionality to different Packet IDs
      */
-    public PacketDistributer()
-    {
+    public PacketDistributer() {
         registry = new HashMap<Short, PacketHandler>();
     }
 
     /**
      * Calls specified handler for Packet ID, or the default handler (if set)
+     *
      * @param packet New incoming Packet
      */
-    public synchronized void onReceive(final Packet packet, final Client client) throws IOException
-    {
+    public synchronized void onReceive(final Packet packet, final Client client) throws IOException {
         if (globalHandler != null) globalHandler.onReceive(packet, client);
 
         final PacketHandler packetHandler = registry.get(packet.getPacketID());
-        if (packetHandler == null)
-        {
+        if (packetHandler == null) {
             if (defaultHandler != null) defaultHandler.handlePacket(packet, client);
-        }
-        else packetHandler.handlePacket(packet, client);
+        } else packetHandler.handlePacket(packet, client);
     }
 
     /**
      * Adds a new handler for this specific Packet ID
-     * @param packetID Packet ID to add handler for
+     *
+     * @param packetID      Packet ID to add handler for
      * @param packetHandler Handler for given Packet ID
      * @throws IllegalArgumentException when Packet ID already has a registered handler
      */
-    public synchronized void addHandler(final short packetID, final PacketHandler packetHandler)
-    {
-        if (registry.containsKey(packetID)) throw new IllegalArgumentException("Handler for ID: " + packetID + " already exists");
+    public synchronized void addHandler(final short packetID, final PacketHandler packetHandler) {
+        if (registry.containsKey(packetID))
+            throw new IllegalArgumentException("Handler for ID: " + packetID + " already exists");
         registry.put(packetID, packetHandler);
     }
 
     /**
      * Returns PacketHandler associated with given Packet ID
+     *
      * @param packetID Packet ID
      * @return PacketHandler or null if no PacketHandler is found
      */
-    public synchronized PacketHandler getHandler(final short packetID)
-    {
+    public synchronized PacketHandler getHandler(final short packetID) {
         return registry.get(packetID);
     }
 
@@ -87,35 +84,34 @@ public class PacketDistributer
      * Removes all registered handlers except the default handler.
      * Removing the default handler can be done by calling {@link #setDefaultHandler(PacketHandler) setDefaultHandler(null)}
      */
-    public synchronized void clearHandlers()
-    {
+    public synchronized void clearHandlers() {
         registry.clear();
     }
 
     /**
      * Sets handler for Packet ID's without custom handler
+     *
      * @param defaultHandler Nullable Packet handler
      */
-    public synchronized void setDefaultHandler(final PacketHandler defaultHandler)
-    {
+    public synchronized void setDefaultHandler(final PacketHandler defaultHandler) {
         this.defaultHandler = defaultHandler;
     }
 
     /**
      * Sets handler which receives all events
+     *
      * @param globalHandler Nullable Packet Distributer
      */
-    public synchronized void setGlobalHandler(final PacketDistributer globalHandler)
-    {
+    public synchronized void setGlobalHandler(final PacketDistributer globalHandler) {
         this.globalHandler = globalHandler;
     }
 
     /**
      * Returns global handler
+     *
      * @return Packet Distributer (may be null)
      */
-    public synchronized PacketDistributer getGlobalHandler()
-    {
+    public synchronized PacketDistributer getGlobalHandler() {
         return globalHandler;
     }
 }

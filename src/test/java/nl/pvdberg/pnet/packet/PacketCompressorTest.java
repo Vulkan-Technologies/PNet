@@ -37,7 +37,7 @@ public class PacketCompressorTest {
         final byte[] data = new byte[8096];
         new Random().nextBytes(data);
 
-        final Packet packet = new PacketBuilder(Packet.PacketType.Reply)
+        final Packet packet = new PacketBuilder()
                 .withBytes(data)
                 .build();
 

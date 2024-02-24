@@ -26,17 +26,14 @@ package nl.pvdberg.pnet.event;
 
 import nl.pvdberg.pnet.client.Client;
 
-public abstract class ReceiveListener implements PNetListener
-{
+public abstract class ReceiveListener implements PNetListener {
     @Override
-    public void onConnect(final Client c)
-    {
+    public void onConnect(final Client c) {
         // Ignored
     }
 
     @Override
-    public void onDisconnect(final Client c)
-    {
+    public void onDisconnect(final Client c) {
         // Ignored
     }
 }

@@ -64,7 +64,7 @@ public class PlainClientTest {
 
     @Test
     public void nonConnectedSend() throws Exception {
-        final Packet packet = new PacketBuilder(Packet.PacketType.Request).build();
+        final Packet packet = new PacketBuilder().build();
         assertFalse(client.send(packet));
     }
 
@@ -72,7 +72,7 @@ public class PlainClientTest {
     @Timeout(1000)
     public void send() throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
-        final Packet packet = new PacketBuilder(Packet.PacketType.Request)
+        final Packet packet = new PacketBuilder()
                 .withString("hello send test")
                 .build();
 

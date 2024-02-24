@@ -41,7 +41,6 @@ public class PacketTest {
         new Random().nextBytes(data);
 
         final Packet packet = new Packet(
-                Packet.PacketType.Request,
                 (short) 0,
                 data
         );
@@ -49,7 +48,6 @@ public class PacketTest {
         // Create expected protocol output
         final ByteArrayOutputStream bout1 = new ByteArrayOutputStream();
         final DataOutputStream dout1 = new DataOutputStream(bout1);
-        dout1.writeByte(Packet.PacketType.Request.ordinal());
         dout1.writeShort(0);
         dout1.writeInt(data.length);
         dout1.write(data);
@@ -69,7 +67,6 @@ public class PacketTest {
         // Create protocol input
         final ByteArrayOutputStream bout1 = new ByteArrayOutputStream();
         final DataOutputStream dout1 = new DataOutputStream(bout1);
-        dout1.writeByte(Packet.PacketType.Request.ordinal());
         dout1.writeShort(0);
         dout1.writeInt(data.length);
         dout1.write(data);
@@ -78,7 +75,6 @@ public class PacketTest {
 
         final Packet packet = Packet.fromStream(din1);
 
-        Assertions.assertEquals(Packet.PacketType.Request, packet.getPacketType());
         Assertions.assertEquals(0, packet.getPacketID());
         Assertions.assertEquals(data.length, packet.getDataLength());
         Assertions.assertArrayEquals(data, packet.getData());

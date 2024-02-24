@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PacketBuilderReaderTest {
-    protected static final Packet.PacketType TYPE = Packet.PacketType.Reply;
     protected static final short ID = 123;
     protected static final boolean BOOLEAN = true;
     protected static final byte BYTE = 1;
@@ -61,8 +60,7 @@ public class PacketBuilderReaderTest {
         }
         assertTrue(utflen > 65536);
 
-        final Packet packet = new PacketBuilder(TYPE)
-                .withID(ID)
+        final Packet packet = new PacketBuilder(ID)
                 .withBoolean(BOOLEAN)
                 .withByte(BYTE)
                 .withBytes(BYTES)

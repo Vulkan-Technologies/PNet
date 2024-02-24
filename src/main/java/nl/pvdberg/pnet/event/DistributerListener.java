@@ -24,45 +24,40 @@
 
 package nl.pvdberg.pnet.event;
 
+import java.io.IOException;
+
 import nl.pvdberg.pnet.client.Client;
 import nl.pvdberg.pnet.packet.Packet;
-
-import java.io.IOException;
 
 /**
  * Automatically calls onReceive on given Packet Distributer
  */
-public class DistributerListener implements PNetListener
-{
+public class DistributerListener implements PNetListener {
     private final PacketDistributer packetDistributer;
 
-    public DistributerListener(final PacketDistributer packetDistributer)
-    {
+    public DistributerListener(final PacketDistributer packetDistributer) {
         this.packetDistributer = packetDistributer;
     }
 
     @Override
-    public void onConnect(final Client c)
-    {
+    public void onConnect(final Client c) {
     }
 
     @Override
-    public void onDisconnect(final Client c)
-    {
+    public void onDisconnect(final Client c) {
     }
 
     @Override
-    public void onReceive(final Packet p, final Client c) throws IOException
-    {
+    public void onReceive(final Packet p, final Client c) throws IOException {
         packetDistributer.onReceive(p, c);
     }
 
     /**
      * Returns internal Packet Distributer
+     *
      * @return Packet Distributer
      */
-    public PacketDistributer getPacketDistributer()
-    {
+    public PacketDistributer getPacketDistributer() {
         return packetDistributer;
     }
 }

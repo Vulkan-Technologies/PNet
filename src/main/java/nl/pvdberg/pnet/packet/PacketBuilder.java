@@ -32,22 +32,22 @@ public class PacketBuilder {
 
     private final ByteArrayOutputStream byteArrayOutputStream;
     private final DataOutputStream dataOutputStream;
-
-    private final Packet.PacketType packetType;
-    private short packetID;
+    private final short packetID;
     private boolean isBuilt;
 
     /**
      * Provides an easy way to build a Packet.
      * Note: data has to be written in the same order as it will be fromStream!
      */
-    public PacketBuilder(final Packet.PacketType packetType) {
-        byteArrayOutputStream = new ByteArrayOutputStream();
-        dataOutputStream = new DataOutputStream(byteArrayOutputStream);
-        isBuilt = false;
+    public PacketBuilder(short id) {
+        this.byteArrayOutputStream = new ByteArrayOutputStream();
+        this.dataOutputStream = new DataOutputStream(byteArrayOutputStream);
+        this.isBuilt = false;
+        this.packetID = id;
+    }
 
-        this.packetType = packetType;
-        packetID = 0;
+    public PacketBuilder() {
+        this((short) 0);
     }
 
     /**
@@ -55,18 +55,6 @@ public class PacketBuilder {
      */
     private void checkBuilt() {
         if (isBuilt) throw new IllegalStateException("Packet already built");
-    }
-
-    /**
-     * Adds a custom Packet ID
-     *
-     * @param packetID Packet ID
-     * @throws IllegalStateException see {@link #checkBuilt()}
-     */
-    public synchronized PacketBuilder withID(final short packetID) {
-        checkBuilt();
-        this.packetID = packetID;
-        return this;
     }
 
     /**
@@ -226,7 +214,6 @@ public class PacketBuilder {
         }
 
         return new Packet(
-                packetType,
                 packetID,
                 byteArrayOutputStream.toByteArray()
         );

@@ -24,7 +24,6 @@
 
 package nl.pvdberg.pnet.event;
 
-public interface AsyncListener
-{
-     void onCompletion(final boolean success);
+public interface AsyncListener {
+    void onCompletion(final boolean success);
 }

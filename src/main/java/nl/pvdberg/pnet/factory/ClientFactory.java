@@ -26,7 +26,6 @@ package nl.pvdberg.pnet.factory;
 
 import nl.pvdberg.pnet.client.Client;
 
-public interface ClientFactory
-{
+public interface ClientFactory {
     Client getClient();
 }
