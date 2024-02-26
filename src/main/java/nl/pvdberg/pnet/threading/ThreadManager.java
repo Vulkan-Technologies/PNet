@@ -27,7 +27,7 @@ package nl.pvdberg.pnet.threading;
 import java.util.concurrent.*;
 
 public class ThreadManager {
-    private static final ExecutorService service = Executors.newCachedThreadPool();
+    private static final ExecutorService service = Executors.newCachedThreadPool(new ErrataThreadFactory());
 
     /**
      * Launches a new thread
