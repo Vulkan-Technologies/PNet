@@ -43,6 +43,27 @@
         <junit.version>5.10.2</junit.version>
     </properties>
 
+    <!-- repositories -->
+    <repositories>
+        <repository>
+            <id>vulkan-technologies</id>
+            <url>https://maven.vulkantechnologies.com/repository/errata/</url>
+        </repository>
+    </repositories>
+
+    <!-- deployment -->
+    <distributionManagement>
+        <repository>
+            <id>errata-releases</id>
+            <url>https://maven.vulkantechnologies.com/repository/errata-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>errata-snapshots</id>
+            <url>https://maven.vulkantechnologies.com/repository/errata-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <!-- dependencies -->
     <dependencies>
         <!-- junit api -->
         <dependency>

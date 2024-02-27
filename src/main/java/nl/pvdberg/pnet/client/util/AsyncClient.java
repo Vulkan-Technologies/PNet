@@ -60,12 +60,9 @@ public class AsyncClient extends ClientDecorator {
             return;
         }
 
-        launchThread(new Runnable() {
-            @Override
-            public void run() {
-                final boolean result = client.connect(host, port);
-                if (asyncListener != null) asyncListener.onCompletion(result);
-            }
+        launchThread(() -> {
+            final boolean result = client.connect(host, port);
+            if (asyncListener != null) asyncListener.onCompletion(result);
         });
     }
 
