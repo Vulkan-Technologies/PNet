@@ -27,11 +27,15 @@ package nl.pvdberg.pnet.client;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.UUID;
 
 import nl.pvdberg.pnet.event.PNetListener;
 import nl.pvdberg.pnet.packet.Packet;
 
 public interface Client {
+
+    UUID uniqueId();
+
     /**
      * Sets the event listener
      *

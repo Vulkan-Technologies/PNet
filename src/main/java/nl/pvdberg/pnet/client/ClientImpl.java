@@ -28,6 +28,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.UUID;
 
 import nl.pvdberg.pnet.event.PNetListener;
 import nl.pvdberg.pnet.factory.SocketFactory;
@@ -37,6 +38,7 @@ import static nl.pvdberg.pnet.threading.ThreadManager.launchThread;
 public class ClientImpl implements Client {
 
     private final SocketFactory sf;
+    private final UUID uniqueId;
 
     private Socket socket;
     private DataInputStream dataInputStream;
@@ -49,6 +51,12 @@ public class ClientImpl implements Client {
      */
     public ClientImpl(final SocketFactory sf) {
         this.sf = sf;
+        this.uniqueId = UUID.randomUUID();
+    }
+
+    @Override
+    public UUID uniqueId() {
+        return this.uniqueId;
     }
 
     @Override

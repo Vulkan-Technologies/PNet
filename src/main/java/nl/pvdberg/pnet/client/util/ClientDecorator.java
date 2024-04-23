@@ -27,6 +27,7 @@ package nl.pvdberg.pnet.client.util;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.UUID;
 
 import nl.pvdberg.pnet.client.Client;
 import nl.pvdberg.pnet.event.PNetListener;
@@ -59,6 +60,11 @@ public class ClientDecorator implements Client {
                     clientListener.onReceive(p, ClientDecorator.this);
             }
         });
+    }
+
+    @Override
+    public UUID uniqueId() {
+        return this.client.uniqueId();
     }
 
     @Override
