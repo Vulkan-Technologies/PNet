@@ -4,7 +4,7 @@
   <groupId>com.vulkantechonologies</groupId>
   <artifactId>pnet</artifactId>
   <name>PNet</name>
-  <version>1.2.0</version>
+  <version>1.2.1</version>
   <description>High level Java network library</description>
   <developers>
     <developer>

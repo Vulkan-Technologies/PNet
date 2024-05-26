@@ -30,7 +30,8 @@ import java.util.Random;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.vulkantechnologies.pnet.codec.implementation.PacketCompressionCodec;
+import com.vulkantechnologies.pnet.codec.compression.PacketCompressionDecoder;
+import com.vulkantechnologies.pnet.codec.compression.PacketCompressionEncoder;
 import com.vulkantechnologies.pnet.packet.io.PacketReader;
 import com.vulkantechnologies.pnet.packet.io.PacketWriter;
 
@@ -45,10 +46,10 @@ public class PacketCompressorTest {
                 .withBytes(data)
                 .build();
 
-        PacketCompressionCodec compressionCodec = new PacketCompressionCodec();
 
-        final Packet compressed = compressionCodec.encode(packet);
-        final Packet decompressed = compressionCodec.decode(compressed);
+
+        final Packet compressed = new PacketCompressionEncoder().encode(packet);
+        final Packet decompressed = new PacketCompressionDecoder().decode(compressed);
 
         Assertions.assertNotEquals(compressed.getData(), data);
         Assertions.assertArrayEquals(data, new PacketReader(packet).readBytes());

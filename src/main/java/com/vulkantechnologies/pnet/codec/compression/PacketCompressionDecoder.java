@@ -1,16 +1,14 @@
-package com.vulkantechnologies.pnet.codec.implementation;
+package com.vulkantechnologies.pnet.codec.compression;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
-import com.vulkantechnologies.pnet.codec.PacketCodec;
+import com.vulkantechnologies.pnet.codec.PacketDecoder;
 import com.vulkantechnologies.pnet.packet.Packet;
 
-public class PacketCompressionCodec implements PacketCodec {
+public class PacketCompressionDecoder implements PacketDecoder {
 
     private static final int INFLATE_BUFFER_SIZE = 16;
 
@@ -27,25 +25,6 @@ public class PacketCompressionCodec implements PacketCodec {
         while ((bytesInflated = gzipInputStream.read(buffer)) >= 0) {
             byteArrayOutputStream.write(buffer, 0, bytesInflated);
         }
-
-        return new Packet(
-                packet.getId(),
-                byteArrayOutputStream.toByteArray()
-        );
-    }
-
-    @Override
-    public Packet encode(Packet packet) throws IOException {
-        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        final GZIPOutputStream gzipOutputStream = new GZIPOutputStream(byteArrayOutputStream) {
-            {
-                def.setLevel(Deflater.BEST_COMPRESSION);
-            }
-        };
-
-        // Deflate all data
-        gzipOutputStream.write(packet.getData());
-        gzipOutputStream.close();
 
         return new Packet(
                 packet.getId(),
