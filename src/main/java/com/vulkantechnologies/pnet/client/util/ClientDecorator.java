@@ -25,18 +25,16 @@
 package com.vulkantechnologies.pnet.client.util;
 
 import java.io.IOException;
-
-import org.jetbrains.annotations.NotNull;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.UUID;
 
 import com.vulkantechnologies.pnet.client.Client;
 import com.vulkantechnologies.pnet.event.PNetListener;
 import com.vulkantechnologies.pnet.packet.Packet;
 
-import lombok.experimental.Delegate;
-
 public class ClientDecorator implements Client {
 
-    @Delegate
     protected final Client client;
     protected PNetListener clientListener;
 
@@ -45,22 +43,72 @@ public class ClientDecorator implements Client {
 
         client.setClientListener(new PNetListener() {
             @Override
-            public void onConnect(final @NotNull Client c) {
+            public void onConnect(final Client c) {
                 if (clientListener != null)
                     clientListener.onConnect(ClientDecorator.this);
             }
 
             @Override
-            public void onDisconnect(final @NotNull Client c) {
+            public void onDisconnect(final Client c) {
                 if (clientListener != null)
                     clientListener.onDisconnect(ClientDecorator.this);
             }
 
             @Override
-            public void onReceive(final @NotNull Packet p, final @NotNull Client c) throws IOException {
+            public void onReceive(final Packet p, final Client c) throws IOException {
                 if (clientListener != null)
                     clientListener.onReceive(p, ClientDecorator.this);
             }
         });
+    }
+
+    @Override
+    public UUID uniqueId() {
+        return this.client.uniqueId();
+    }
+
+    @Override
+    public void setClientListener(final PNetListener clientListener) {
+        this.clientListener = clientListener;
+    }
+
+    @Override
+    public boolean connect(final String host, final int port) {
+        return client.connect(host, port);
+    }
+
+    @Override
+    public void setSocket(final Socket socket) throws IOException {
+        client.setSocket(socket);
+    }
+
+    @Override
+    public boolean send(final Packet packet) {
+        return client.send(packet);
+    }
+
+    @Override
+    public void close() {
+        client.close();
+    }
+
+    @Override
+    public boolean isConnected() {
+        return client.isConnected();
+    }
+
+    @Override
+    public InetAddress getInetAddress() {
+        return client.getInetAddress();
+    }
+
+    @Override
+    public Socket getSocket() {
+        return client.getSocket();
+    }
+
+    @Override
+    public String toString() {
+        return client.toString();
     }
 }
