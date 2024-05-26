@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Random;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -74,7 +75,7 @@ public class BenchmarkTest {
 
         server.setListener(new ReceiveListener() {
             @Override
-            public void onReceive(final Packet p, final Client c) throws IOException {
+            public void onReceive(final @NotNull Packet p, final @NotNull Client c) throws IOException {
                 Assertions.assertEquals(1, p.getId());
             }
         });
@@ -101,7 +102,7 @@ public class BenchmarkTest {
 
         server.setListener(new ReceiveListener() {
             @Override
-            public void onReceive(final Packet p, final Client c) throws IOException {
+            public void onReceive(final @NotNull Packet p, final @NotNull Client c) throws IOException {
                 //assertArrayEquals(randomData, new PacketReader(p).readBytes());
                 Assertions.assertEquals(randomData.length + 4, p.getData().length);
             }

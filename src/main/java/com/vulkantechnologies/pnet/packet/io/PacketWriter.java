@@ -59,7 +59,7 @@ public class PacketWriter {
      * @throws IllegalStateException when Packet is already built
      */
     private void checkBuilt() {
-        Check.stateCondition(!isBuilt, "Packet already built");
+        Check.stateCondition(this.isBuilt, "Packet already built");
     }
 
     /**

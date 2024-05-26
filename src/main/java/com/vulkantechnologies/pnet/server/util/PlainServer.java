@@ -24,7 +24,6 @@
 
 package com.vulkantechnologies.pnet.server.util;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 
 import com.vulkantechnologies.pnet.client.util.PlainClient;
@@ -34,7 +33,7 @@ public class PlainServer extends ServerDecorator {
     /**
      * Creates a new normal Server
      */
-    public PlainServer() throws IOException {
+    public PlainServer() {
         super(new ServerImpl(
                 address -> new ServerSocket(address.getPort(), 100, address.getAddress()),
                 PlainClient::new

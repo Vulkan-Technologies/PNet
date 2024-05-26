@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
 
 import com.vulkantechnologies.pnet.client.Client;
@@ -80,7 +81,7 @@ public class PlainClientTest {
 
         server.setListener(new ReceiveListener() {
             @Override
-            public void onReceive(final Packet p, final Client c) throws IOException {
+            public void onReceive(final @NotNull Packet p, final @NotNull Client c) throws IOException {
                 latch.countDown();
                 assertArrayEquals(packet.getData(), p.getData());
             }
@@ -96,17 +97,17 @@ public class PlainClientTest {
     public void clientType() throws Exception {
         client.setClientListener(new PNetListener() {
             @Override
-            public void onConnect(final Client c) {
+            public void onConnect(final @NotNull Client c) {
                 assertInstanceOf(PlainClient.class, c);
             }
 
             @Override
-            public void onDisconnect(final Client c) {
+            public void onDisconnect(final @NotNull Client c) {
 
             }
 
             @Override
-            public void onReceive(final Packet p, final Client c) throws IOException {
+            public void onReceive(final @NotNull Packet p, final @NotNull Client c) throws IOException {
 
             }
         });

@@ -24,16 +24,19 @@
 
 package com.vulkantechnologies.pnet.event;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.vulkantechnologies.pnet.client.Client;
 
 public abstract class ReceiveListener implements PNetListener {
+
     @Override
-    public void onConnect(final Client c) {
+    public void onConnect(@NotNull Client client) {
         // Ignored
     }
 
     @Override
-    public void onDisconnect(final Client c) {
+    public void onDisconnect(@NotNull Client client) {
         // Ignored
     }
 }

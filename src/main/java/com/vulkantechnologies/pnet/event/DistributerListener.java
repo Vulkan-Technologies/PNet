@@ -26,38 +26,33 @@ package com.vulkantechnologies.pnet.event;
 
 import java.io.IOException;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.vulkantechnologies.pnet.client.Client;
 import com.vulkantechnologies.pnet.packet.Packet;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Automatically calls onReceive on given Packet Distributer
  */
+@RequiredArgsConstructor
+@Getter
 public class DistributerListener implements PNetListener {
+
     private final PacketDistributer packetDistributer;
 
-    public DistributerListener(final PacketDistributer packetDistributer) {
-        this.packetDistributer = packetDistributer;
+    @Override
+    public void onConnect(final @NotNull Client client) {
     }
 
     @Override
-    public void onConnect(final Client c) {
+    public void onDisconnect(final @NotNull Client client) {
     }
 
     @Override
-    public void onDisconnect(final Client c) {
-    }
-
-    @Override
-    public void onReceive(final Packet p, final Client c) throws IOException {
-        packetDistributer.onReceive(p, c);
-    }
-
-    /**
-     * Returns internal Packet Distributer
-     *
-     * @return Packet Distributer
-     */
-    public PacketDistributer getPacketDistributer() {
-        return packetDistributer;
+    public void onReceive(final @NotNull Packet packet, final @NotNull Client client) throws IOException {
+        packetDistributer.onReceive(packet, client);
     }
 }

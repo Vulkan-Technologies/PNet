@@ -24,16 +24,21 @@
 
 package com.vulkantechnologies.pnet.event;
 
-import com.vulkantechnologies.pnet.client.Client;
-import com.vulkantechnologies.pnet.packet.Packet;
 import java.io.IOException;
 
-public interface PacketHandler
-{
+import org.jetbrains.annotations.NotNull;
+
+import com.vulkantechnologies.pnet.client.Client;
+import com.vulkantechnologies.pnet.packet.Packet;
+
+@FunctionalInterface
+public interface PacketHandler {
+
     /**
      * Handles an incoming Packet distributed by a PacketDistributer
-     * @param p Incoming Packet
-     * @param c Sender
+     * @param packet Incoming Packet
+     * @param client Sender
      */
-    void handlePacket(final Packet p, final Client c) throws IOException;
+    void handlePacket(@NotNull Packet packet, @NotNull Client client) throws IOException;
+
 }

@@ -26,6 +26,11 @@ package com.vulkantechnologies.pnet.factory;
 
 import java.net.Socket;
 
+import org.jetbrains.annotations.NotNull;
+
+@FunctionalInterface
 public interface SocketFactory {
-    Socket getSocket(final String host, final int port) throws Exception;
+
+    Socket getSocket(@NotNull String host, int port) throws Exception;
+
 }

@@ -26,30 +26,33 @@ package com.vulkantechnologies.pnet.event;
 
 import java.io.IOException;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.vulkantechnologies.pnet.client.Client;
 import com.vulkantechnologies.pnet.packet.Packet;
 
 public interface PNetListener {
+
     /**
      * Called when a connection is made
      *
-     * @param c Connected Client
+     * @param client Connected Client
      */
-    void onConnect(final Client c);
+    void onConnect(@NotNull Client client);
 
     /**
      * Called when a connection is lost
      *
-     * @param c Lost Client
+     * @param client Lost Client
      */
-    void onDisconnect(final Client c);
+    void onDisconnect(@NotNull Client client);
 
     /**
      * Called when a new Packet has been received. May throw a caught and silenced IOException
      *
-     * @param p New Packet
-     * @param c Sender
+     * @param packet New Packet
+     * @param client Sender
      * @throws IOException when anything goes wrong during data extraction. This exception is caught because invalid Packets should not crash the Client or Server
      */
-    void onReceive(final Packet p, final Client c) throws IOException;
+    void onReceive(@NotNull Packet packet, @NotNull Client client) throws IOException;
 }

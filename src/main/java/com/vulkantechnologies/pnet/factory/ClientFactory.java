@@ -26,6 +26,9 @@ package com.vulkantechnologies.pnet.factory;
 
 import com.vulkantechnologies.pnet.client.Client;
 
+@FunctionalInterface
 public interface ClientFactory {
+
     Client getClient();
+
 }

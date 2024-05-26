@@ -34,6 +34,7 @@ import com.vulkantechnologies.pnet.event.AsyncListener;
 
 import static com.vulkantechnologies.pnet.threading.ThreadManager.launchThread;
 import static com.vulkantechnologies.pnet.threading.ThreadManager.waitForCompletion;
+import lombok.Getter;
 
 public class AsyncClient extends ClientDecorator {
 
@@ -47,7 +48,6 @@ public class AsyncClient extends ClientDecorator {
      */
     public AsyncClient(final Client client) {
         super(client);
-
         asyncSenderQueue = new LinkedBlockingDeque<>();
     }
 
@@ -121,6 +121,8 @@ public class AsyncClient extends ClientDecorator {
     }
 
     private static class AsyncPacket {
+
+        @Getter
         private final Packet packet;
         private final AsyncListener asyncListener;
 
@@ -134,8 +136,5 @@ public class AsyncClient extends ClientDecorator {
                 asyncListener.onCompletion(result);
         }
 
-        public Packet getPacket() {
-            return packet;
-        }
     }
 }

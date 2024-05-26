@@ -27,6 +27,11 @@ package com.vulkantechnologies.pnet.factory;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 
+import org.jetbrains.annotations.NotNull;
+
+@FunctionalInterface
 public interface ServerSocketFactory {
-    ServerSocket getServerSocket(InetSocketAddress address) throws Exception;
+
+    ServerSocket getServerSocket(@NotNull InetSocketAddress address) throws Exception;
+
 }

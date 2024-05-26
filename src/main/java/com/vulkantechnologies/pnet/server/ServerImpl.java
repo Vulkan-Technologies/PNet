@@ -31,16 +31,20 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.vulkantechnologies.pnet.client.Client;
 import com.vulkantechnologies.pnet.event.PNetListener;
 import com.vulkantechnologies.pnet.factory.ClientFactory;
 import com.vulkantechnologies.pnet.factory.ServerSocketFactory;
 import com.vulkantechnologies.pnet.packet.Packet;
+
 import static com.vulkantechnologies.pnet.threading.ThreadManager.launchThread;
 
 public class ServerImpl implements Server {
-    private final ServerSocketFactory ssf;
-    private final ClientFactory cf;
+
+    private final ServerSocketFactory serverSocketFactory;
+    private final ClientFactory clientFactory;
 
     private ServerSocket server;
     private final List<Client> clients;
@@ -49,14 +53,13 @@ public class ServerImpl implements Server {
     /**
      * Creates a new Server using given factories
      *
-     * @param ssf ServerSocket factory
-     * @param cf  Client factory
+     * @param serverSocketFactory ServerSocket factory
+     * @param clientFactory  Client factory
      */
-    public ServerImpl(final ServerSocketFactory ssf, final ClientFactory cf) throws IOException {
-        this.ssf = ssf;
-        this.cf = cf;
-
-        clients = new ArrayList<>();
+    public ServerImpl(final ServerSocketFactory serverSocketFactory, final ClientFactory clientFactory) {
+        this.serverSocketFactory = serverSocketFactory;
+        this.clientFactory = clientFactory;
+        this.clients = new ArrayList<>();
     }
 
     @Override
@@ -67,7 +70,7 @@ public class ServerImpl implements Server {
     @Override
     public synchronized boolean start(InetSocketAddress address) {
         try {
-            server = ssf.getServerSocket(address);
+            server = serverSocketFactory.getServerSocket(address);
         } catch (final Exception e) {
             return false;
         }
@@ -82,12 +85,12 @@ public class ServerImpl implements Server {
             // Wait for a connection
             try {
                 final Socket socket = server.accept();
-                final Client client = cf.getClient();
+                final Client client = clientFactory.getClient();
 
                 // Pass events
                 client.setClientListener(new PNetListener() {
                     @Override
-                    public void onConnect(final Client c) {
+                    public void onConnect(final @NotNull Client c) {
                         synchronized (clients) {
                             clients.add(c);
                         }
@@ -95,7 +98,7 @@ public class ServerImpl implements Server {
                     }
 
                     @Override
-                    public void onDisconnect(final Client c) {
+                    public void onDisconnect(final @NotNull Client c) {
                         synchronized (clients) {
                             clients.remove(c);
                         }
@@ -103,7 +106,7 @@ public class ServerImpl implements Server {
                     }
 
                     @Override
-                    public void onReceive(final Packet p, final Client c) throws IOException {
+                    public void onReceive(final @NotNull Packet p, final @NotNull Client c) throws IOException {
                         if (serverListener != null) serverListener.onReceive(p, c);
                     }
                 });

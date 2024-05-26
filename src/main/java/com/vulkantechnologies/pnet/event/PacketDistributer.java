@@ -30,10 +30,17 @@ import java.util.Map;
 
 import com.vulkantechnologies.pnet.client.Client;
 import com.vulkantechnologies.pnet.packet.Packet;
+import com.vulkantechnologies.pnet.utils.Check;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
 public class PacketDistributer {
 
+    @Setter
     private PacketDistributer globalHandler;
+    @Setter
     private PacketHandler defaultHandler;
     private final Map<Short, PacketHandler> registry;
 
@@ -50,25 +57,28 @@ public class PacketDistributer {
      * @param packet New incoming Packet
      */
     public synchronized void onReceive(final Packet packet, final Client client) throws IOException {
-        if (globalHandler != null) globalHandler.onReceive(packet, client);
+        if (globalHandler != null)
+            globalHandler.onReceive(packet, client);
 
         final PacketHandler packetHandler = registry.get(packet.getId());
-        if (packetHandler == null) {
-            if (defaultHandler != null) defaultHandler.handlePacket(packet, client);
-        } else packetHandler.handlePacket(packet, client);
+        if (packetHandler != null) {
+            packetHandler.handlePacket(packet, client);
+            return;
+        }
+        if (defaultHandler != null)
+            defaultHandler.handlePacket(packet, client);
     }
 
     /**
      * Adds a new handler for this specific Packet ID
      *
-     * @param packetID      Packet ID to add handler for
+     * @param packetId      Packet ID to add handler for
      * @param packetHandler Handler for given Packet ID
      * @throws IllegalArgumentException when Packet ID already has a registered handler
      */
-    public synchronized void addHandler(final short packetID, final PacketHandler packetHandler) {
-        if (registry.containsKey(packetID))
-            throw new IllegalArgumentException("Handler for ID: " + packetID + " already exists");
-        registry.put(packetID, packetHandler);
+    public synchronized void addHandler(short packetId, PacketHandler packetHandler) {
+        Check.stateCondition(registry.containsKey(packetId), String.format("Handler for id: %s already exists", packetId));
+        registry.put(packetId, packetHandler);
     }
 
     /**
@@ -87,32 +97,5 @@ public class PacketDistributer {
      */
     public synchronized void clearHandlers() {
         registry.clear();
-    }
-
-    /**
-     * Sets handler for Packet ID's without custom handler
-     *
-     * @param defaultHandler Nullable Packet handler
-     */
-    public synchronized void setDefaultHandler(final PacketHandler defaultHandler) {
-        this.defaultHandler = defaultHandler;
-    }
-
-    /**
-     * Sets handler which receives all events
-     *
-     * @param globalHandler Nullable Packet Distributer
-     */
-    public synchronized void setGlobalHandler(final PacketDistributer globalHandler) {
-        this.globalHandler = globalHandler;
-    }
-
-    /**
-     * Returns global handler
-     *
-     * @return Packet Distributer (may be null)
-     */
-    public synchronized PacketDistributer getGlobalHandler() {
-        return globalHandler;
     }
 }

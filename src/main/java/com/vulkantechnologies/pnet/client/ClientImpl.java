@@ -30,28 +30,33 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.UUID;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.vulkantechnologies.pnet.packet.Packet;
 import com.vulkantechnologies.pnet.event.PNetListener;
 import com.vulkantechnologies.pnet.factory.SocketFactory;
+import com.vulkantechnologies.pnet.utils.Check;
 
 import static com.vulkantechnologies.pnet.threading.ThreadManager.launchThread;
+import lombok.Setter;
 
 public class ClientImpl implements Client {
 
-    private final SocketFactory sf;
     private final UUID uniqueId;
+    private final SocketFactory socketFactory;
 
     private Socket socket;
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
 
+    @Setter
     private PNetListener clientListener;
 
     /**
      * Creates a new Client
      */
-    public ClientImpl(final SocketFactory sf) {
-        this.sf = sf;
+    public ClientImpl(final SocketFactory socketFactory) {
+        this.socketFactory = socketFactory;
         this.uniqueId = UUID.randomUUID();
     }
 
@@ -61,19 +66,12 @@ public class ClientImpl implements Client {
     }
 
     @Override
-    public synchronized void setClientListener(final PNetListener clientListener) {
-        this.clientListener = clientListener;
-    }
-
-    @Override
-    public synchronized boolean connect(final String host, final int port) {
-        if (socket != null && !socket.isClosed())
-            throw new IllegalStateException("Client not closed");
-        if (host.isEmpty() || port == -1)
-            throw new IllegalStateException("Host and port are not set");
+    public synchronized boolean connect(@NotNull String host, int port) {
+        Check.stateCondition(socket != null && !socket.isClosed(), "Client not closed");
+        Check.stateCondition(host.isEmpty() || port == -1, "Host and port are not set");
 
         try {
-            setSocket(sf.getSocket(host, port));
+            setSocket(this.socketFactory.getSocket(host, port));
             return true;
         } catch (final Exception e) {
             return false;
@@ -82,8 +80,7 @@ public class ClientImpl implements Client {
 
     @Override
     public synchronized void setSocket(final Socket socket) throws IOException {
-        if (this.socket != null && !this.socket.isClosed())
-            throw new IllegalStateException("Client not closed");
+        Check.notNull(this.socket != null && !this.socket.isClosed(), "Client not closed");
 
         this.socket = socket;
         socket.setKeepAlive(false);

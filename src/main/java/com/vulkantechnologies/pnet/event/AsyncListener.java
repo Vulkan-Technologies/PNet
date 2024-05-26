@@ -24,8 +24,9 @@
 
 package com.vulkantechnologies.pnet.event;
 
+@FunctionalInterface
 public interface AsyncListener {
 
-    void onCompletion(final boolean success);
+    void onCompletion(boolean success);
 
 }
