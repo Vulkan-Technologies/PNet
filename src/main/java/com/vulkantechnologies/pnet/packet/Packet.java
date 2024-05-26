@@ -66,6 +66,16 @@ public class Packet {
     }
 
     /**
+     * Alters the data of the packet
+     *
+     * @param data new data
+     * @return new Packet with altered data
+     */
+    public Packet alterData(byte[] data) {
+        return new Packet(id, data);
+    }
+
+    /**
      * Reads a Packet from raw input data
      *
      * @param in DataInputStream to fromStream from

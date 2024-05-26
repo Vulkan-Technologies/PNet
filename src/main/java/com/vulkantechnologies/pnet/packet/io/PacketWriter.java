@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.vulkantechnologies.pnet.packet;
+package com.vulkantechnologies.pnet.packet.io;
 
 
 import java.io.*;
@@ -30,9 +30,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
 
+import com.vulkantechnologies.pnet.packet.Packet;
 import com.vulkantechnologies.pnet.utils.Check;
 
-public class PacketBuilder {
+public class PacketWriter {
 
     private final ByteArrayOutputStream byteArrayOutputStream;
     private final DataOutputStream dataOutputStream;
@@ -43,14 +44,14 @@ public class PacketBuilder {
      * Provides an easy way to build a Packet.
      * Note: data has to be written in the same order as it will be fromStream!
      */
-    public PacketBuilder(short id) {
+    public PacketWriter(short id) {
         this.byteArrayOutputStream = new ByteArrayOutputStream();
         this.dataOutputStream = new DataOutputStream(byteArrayOutputStream);
         this.isBuilt = false;
         this.packetID = id;
     }
 
-    public PacketBuilder() {
+    public PacketWriter() {
         this((short) 0);
     }
 
@@ -67,7 +68,7 @@ public class PacketBuilder {
      * @param b Byte
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withByte(final byte b) {
+    public synchronized PacketWriter withByte(final byte b) {
         checkBuilt();
         try {
             dataOutputStream.writeByte(b);
@@ -82,7 +83,7 @@ public class PacketBuilder {
      * @param b Byte array
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withBytes(final byte[] b) {
+    public synchronized PacketWriter withBytes(final byte[] b) {
         checkBuilt();
         try {
             dataOutputStream.writeInt(b.length);
@@ -98,7 +99,7 @@ public class PacketBuilder {
      * @param i Integer
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withInt(final int i) {
+    public synchronized PacketWriter withInt(final int i) {
         checkBuilt();
         try {
             dataOutputStream.writeInt(i);
@@ -113,7 +114,7 @@ public class PacketBuilder {
      * @param s UTF-8 String
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withString(final String s) {
+    public synchronized PacketWriter withString(final String s) {
         withBytes(s.getBytes(StandardCharsets.UTF_8));
         return this;
     }
@@ -124,7 +125,7 @@ public class PacketBuilder {
      * @param b Boolean
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withBoolean(final boolean b) {
+    public synchronized PacketWriter withBoolean(final boolean b) {
         checkBuilt();
         try {
             dataOutputStream.writeBoolean(b);
@@ -139,7 +140,7 @@ public class PacketBuilder {
      * @param f Float
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withFloat(final float f) {
+    public synchronized PacketWriter withFloat(final float f) {
         checkBuilt();
         try {
             dataOutputStream.writeFloat(f);
@@ -154,7 +155,7 @@ public class PacketBuilder {
      * @param d Double
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withDouble(final double d) {
+    public synchronized PacketWriter withDouble(final double d) {
         checkBuilt();
         try {
             dataOutputStream.writeDouble(d);
@@ -169,7 +170,7 @@ public class PacketBuilder {
      * @param l Long
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withLong(final long l) {
+    public synchronized PacketWriter withLong(final long l) {
         checkBuilt();
         try {
             dataOutputStream.writeLong(l);
@@ -184,7 +185,7 @@ public class PacketBuilder {
      * @param s Short
      * @throws IllegalStateException see {@link #checkBuilt()}
      */
-    public synchronized PacketBuilder withShort(final short s) {
+    public synchronized PacketWriter withShort(final short s) {
         checkBuilt();
         try {
             dataOutputStream.writeShort(s);
@@ -198,7 +199,7 @@ public class PacketBuilder {
      * @param uniqueId UUID
      * @return PacketBuilder
      */
-    public synchronized PacketBuilder withUniqueId(final UUID uniqueId) {
+    public synchronized PacketWriter withUniqueId(final UUID uniqueId) {
         withLong(uniqueId.getMostSignificantBits());
         withLong(uniqueId.getLeastSignificantBits());
         return this;
@@ -210,7 +211,7 @@ public class PacketBuilder {
      * @param date Date
      * @return PacketBuilder
      */
-    public synchronized PacketBuilder withDate(Date date) {
+    public synchronized PacketWriter withDate(Date date) {
         withLong(date.getTime());
         return this;
     }

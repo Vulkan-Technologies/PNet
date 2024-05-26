@@ -31,15 +31,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.vulkantechnologies.pnet.packet.Packet;
-import com.vulkantechnologies.pnet.packet.PacketBuilder;
+import com.vulkantechnologies.pnet.packet.io.PacketWriter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class PacketDistributionTest {
-    protected static final Packet packet1 = new PacketBuilder((short) 1)
+    protected static final Packet packet1 = new PacketWriter((short) 1)
             .build();
 
-    protected static final Packet packet2 = new PacketBuilder((short) 2)
+    protected static final Packet packet2 = new PacketWriter((short) 2)
             .build();
 
     protected PacketDistributer packetDistributer;

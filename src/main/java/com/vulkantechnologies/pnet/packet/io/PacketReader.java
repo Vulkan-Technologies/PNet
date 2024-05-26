@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.vulkantechnologies.pnet.packet;
+package com.vulkantechnologies.pnet.packet.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -32,6 +32,8 @@ import java.util.Date;
 import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
+
+import com.vulkantechnologies.pnet.packet.Packet;
 
 public class PacketReader {
 

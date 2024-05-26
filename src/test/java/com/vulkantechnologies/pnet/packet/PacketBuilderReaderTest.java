@@ -27,6 +27,9 @@ package com.vulkantechnologies.pnet.packet;
 
 import org.junit.jupiter.api.Test;
 
+import com.vulkantechnologies.pnet.packet.io.PacketReader;
+import com.vulkantechnologies.pnet.packet.io.PacketWriter;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PacketBuilderReaderTest {
@@ -60,7 +63,7 @@ public class PacketBuilderReaderTest {
         }
         assertTrue(utflen > 65536);
 
-        final Packet packet = new PacketBuilder(ID)
+        final Packet packet = new PacketWriter(ID)
                 .withBoolean(BOOLEAN)
                 .withByte(BYTE)
                 .withBytes(BYTES)

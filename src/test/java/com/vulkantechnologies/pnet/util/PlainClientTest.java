@@ -35,7 +35,7 @@ import com.vulkantechnologies.pnet.client.util.PlainClient;
 import com.vulkantechnologies.pnet.event.PNetListener;
 import com.vulkantechnologies.pnet.event.ReceiveListener;
 import com.vulkantechnologies.pnet.packet.Packet;
-import com.vulkantechnologies.pnet.packet.PacketBuilder;
+import com.vulkantechnologies.pnet.packet.io.PacketWriter;
 import com.vulkantechnologies.pnet.server.Server;
 import com.vulkantechnologies.pnet.server.util.PlainServer;
 import static org.junit.jupiter.api.Assertions.*;
@@ -66,7 +66,7 @@ public class PlainClientTest {
 
     @Test
     public void nonConnectedSend() throws Exception {
-        final Packet packet = new PacketBuilder().build();
+        final Packet packet = new PacketWriter().build();
         assertFalse(client.send(packet));
     }
 
@@ -74,7 +74,7 @@ public class PlainClientTest {
     @Timeout(1000)
     public void send() throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
-        final Packet packet = new PacketBuilder()
+        final Packet packet = new PacketWriter()
                 .withString("hello send test")
                 .build();
 

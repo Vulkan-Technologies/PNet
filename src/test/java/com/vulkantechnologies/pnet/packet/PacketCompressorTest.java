@@ -30,6 +30,9 @@ import java.util.Random;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.vulkantechnologies.pnet.packet.io.PacketReader;
+import com.vulkantechnologies.pnet.packet.io.PacketWriter;
+
 
 public class PacketCompressorTest {
     @Test
@@ -37,7 +40,7 @@ public class PacketCompressorTest {
         final byte[] data = new byte[8096];
         new Random().nextBytes(data);
 
-        final Packet packet = new PacketBuilder()
+        final Packet packet = new PacketWriter()
                 .withBytes(data)
                 .build();
 

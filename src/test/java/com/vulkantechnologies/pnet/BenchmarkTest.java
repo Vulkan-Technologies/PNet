@@ -37,7 +37,7 @@ import com.vulkantechnologies.pnet.client.Client;
 import com.vulkantechnologies.pnet.client.util.PlainClient;
 import com.vulkantechnologies.pnet.event.ReceiveListener;
 import com.vulkantechnologies.pnet.packet.Packet;
-import com.vulkantechnologies.pnet.packet.PacketBuilder;
+import com.vulkantechnologies.pnet.packet.io.PacketWriter;
 import com.vulkantechnologies.pnet.server.Server;
 import com.vulkantechnologies.pnet.server.util.PlainServer;
 
@@ -70,7 +70,7 @@ public class BenchmarkTest {
     public void testEmptyPacketsPerSecond() throws Exception {
         final int amount = 1000;
 
-        final Packet packet = new PacketBuilder((short) 1).build();
+        final Packet packet = new PacketWriter((short) 1).build();
 
         server.setListener(new ReceiveListener() {
             @Override
@@ -95,7 +95,7 @@ public class BenchmarkTest {
         final byte[] randomData = new byte[50000];
         new Random().nextBytes(randomData);
 
-        final Packet packet = new PacketBuilder()
+        final Packet packet = new PacketWriter()
                 .withBytes(randomData)
                 .build();
 
