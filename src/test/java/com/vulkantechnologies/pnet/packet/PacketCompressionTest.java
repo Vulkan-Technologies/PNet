@@ -36,7 +36,7 @@ import com.vulkantechnologies.pnet.packet.io.PacketReader;
 import com.vulkantechnologies.pnet.packet.io.PacketWriter;
 
 
-public class PacketCompressorTest {
+public class PacketCompressionTest {
     @Test
     public void compressAndDecompress() throws Exception {
         final byte[] data = new byte[8096];
@@ -53,5 +53,6 @@ public class PacketCompressorTest {
 
         Assertions.assertNotEquals(compressed.getData(), data);
         Assertions.assertArrayEquals(data, new PacketReader(packet).readBytes());
+        Assertions.assertArrayEquals(data, new PacketReader(decompressed).readBytes());
     }
 }

@@ -38,6 +38,7 @@ import com.vulkantechnologies.pnet.client.Client;
 import com.vulkantechnologies.pnet.client.util.PlainClient;
 import com.vulkantechnologies.pnet.event.ReceiveListener;
 import com.vulkantechnologies.pnet.packet.Packet;
+import com.vulkantechnologies.pnet.packet.io.PacketReader;
 import com.vulkantechnologies.pnet.packet.io.PacketWriter;
 import com.vulkantechnologies.pnet.server.Server;
 import com.vulkantechnologies.pnet.server.util.PlainServer;
@@ -103,7 +104,7 @@ public class BenchmarkTest {
         server.setListener(new ReceiveListener() {
             @Override
             public void onReceive(final @NotNull Packet p, final @NotNull Client c) throws IOException {
-                //assertArrayEquals(randomData, new PacketReader(p).readBytes());
+                Assertions.assertArrayEquals(randomData, new PacketReader(p).readBytes());
                 Assertions.assertEquals(randomData.length + 4, p.getData().length);
             }
         });
